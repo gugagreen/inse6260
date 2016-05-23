@@ -1,7 +1,7 @@
 package ca.concordia.inse6260.entities;
 
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class CourseDates {
@@ -17,11 +19,15 @@ public class CourseDates {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false, updatable = false)
 	private long id;
+	@Temporal(TemporalType.DATE)
 	private Calendar startDate;
+	@Temporal(TemporalType.DATE)
 	private Calendar endDate;
 	private String weekDays;
-	private Calendar startTime;
-	private Calendar endTime;
+	@Temporal(TemporalType.TIME)
+	private Date startTime;
+	@Temporal(TemporalType.TIME)
+	private Date endTime;
 	@Column(name = "season", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Season season;
@@ -68,19 +74,19 @@ public class CourseDates {
 		this.weekDays = weekDays;
 	}
 
-	public Calendar getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Calendar startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public Calendar getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Calendar endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 

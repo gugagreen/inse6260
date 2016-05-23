@@ -8,8 +8,15 @@
 <body>
 	<h1>Welcome!</h1>
 
-	<p>
-		Click <a th:href="@{/hello}">here</a> to see a greeting.
-	</p>
+	<div style="width: 100%; display: table;">
+		<div style="display: table-row">
+			<div style="width: 600px; display: table-cell;">
+				<a th:href="@{/cart}">Cart</a>
+			</div>
+			<div style="display: table-cell;">
+				<a th:href="@{/transcript}">Transcript</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
