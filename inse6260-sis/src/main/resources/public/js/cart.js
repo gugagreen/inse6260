@@ -1,13 +1,26 @@
 $(document).ready(function() {
+	$.ajax({
+		url : "http://localhost:8080/courseDates"
+	}).then(function(data) {
+		populateCourseDatesSelect(data);
+	});
 	$("#term_select").change(function() {
 		alert( "Handler for .change() called: " +  this.value);
-	});
-	$.ajax({
-		url : "http://localhost:8080/courses"
-	}).then(function(data) {
-		drawTable(data);
+		$.ajax({
+			url : "http://localhost:8080/courses/" + this.value
+		}).then(function(data) {
+			$('#allCourses').empty();
+			drawTable(data);
+		});
 	});
 });
+
+function populateCourseDatesSelect(data) {
+	var select = $('#term_select');
+	for (var i = 0; i < data.length; i++) {
+		select.append($("<option />").val(data[i]).text(data[i]));
+	}
+}
 
 
 function drawTable(data) {

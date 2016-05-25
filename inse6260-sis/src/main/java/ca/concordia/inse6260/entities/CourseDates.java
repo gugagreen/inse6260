@@ -10,10 +10,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@NamedQuery(name="CourseDates.findSeasons", query="SELECT DISTINCT CONCAT(cd.season,substring(cd.startDate,1,4)) FROM CourseDates cd")
 public class CourseDates {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
