@@ -28,7 +28,6 @@ public class DefaultCourseService implements CourseService {
 		List<CourseEntry> courses = new ArrayList<CourseEntry>();
 		if (yearSeason != null) {
 			// FIXME - validate size
-			System.out.println(">>> yearSeason : " + yearSeason);
 			Season season = Season.valueOf(yearSeason.substring(0, yearSeason.length()-4));
 			String year = yearSeason.substring(yearSeason.length()-4);
 			Calendar cal = Calendar.getInstance();
