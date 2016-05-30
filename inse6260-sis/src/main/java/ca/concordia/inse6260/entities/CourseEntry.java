@@ -1,5 +1,6 @@
 package ca.concordia.inse6260.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 @Entity
-@NamedQuery(name="CourseEntry.findBySeason", query="SELECT ce FROM CourseEntry ce, CourseDates cd "
+@NamedQuery(name = "CourseEntry.findBySeason", query = "SELECT ce FROM CourseEntry ce, CourseDates cd "
 		+ "WHERE ce.dates = cd AND cd.season = ?1 AND cd.startDate >= ?2")
 public class CourseEntry {
 
@@ -23,11 +24,13 @@ public class CourseEntry {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false, updatable = false)
 	private long id;
-	@OneToOne(optional=false)
-	@JoinColumn(name="course_id")
+	@OneToOne(optional = false)
+	@JoinColumn(name = "course_id")
 	private Course course;
+	@Column(name = "base_cost")
+	private BigDecimal baseCost;
 	@OneToOne
-	@JoinColumn(name="date_id")
+	@JoinColumn(name = "date_id")
 	private CourseDates dates;
 	private int size;
 	@ManyToOne
@@ -42,8 +45,8 @@ public class CourseEntry {
 
 	@Override
 	public String toString() {
-		return "CourseEntry [id=" + id + ", course=" + course + ", dates=" + dates + ", size=" + size + ", professor=" + professor
-				+ ", students=" + students + "]";
+		return "CourseEntry [id=" + id + ", course=" + course + ", baseCost=" + baseCost + ", dates=" + dates + ", size=" + size
+				+ ", professor=" + professor + ", students=" + students + "]";
 	}
 
 	public long getId() {
@@ -60,6 +63,14 @@ public class CourseEntry {
 
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+
+	public BigDecimal getBaseCost() {
+		return baseCost;
+	}
+
+	public void setBaseCost(BigDecimal baseCost) {
+		this.baseCost = baseCost;
 	}
 
 	public CourseDates getDates() {

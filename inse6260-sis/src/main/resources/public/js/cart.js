@@ -21,7 +21,6 @@ function populateCourseDatesSelect(data) {
 	}
 }
 
-
 function drawTable(data) {
 	var table = $('<table>');
 	table.append(drawHeader());	
@@ -33,36 +32,36 @@ function drawTable(data) {
 	$('#allCourses').append(table);
 }
 
-function drawHeader() {
+function createRow(rowData, isHeader, link) {
 	var row = $('<tr>');
-	var cel1 = $('<th>').text('Id');
-	var cel2 = $('<th>').text('Size');
-	var cel3 = $('<th>').text('Code');
-	var cel4 = $('<th>').text('Name');
-	var cel5 = $('<th>').text('Credits');
-	var cel6 = $('<th>').text('Professor');
-	row.append(cel1);
-	row.append(cel2);
-	row.append(cel3);
-	row.append(cel4);
-	row.append(cel5);
-	row.append(cel6);
+	var celDef = (isHeader) ? ('<th>'): ('<td>');
+	for (var i = 0; i < rowData.length; i++) {
+		var cel = $(celDef).text(rowData[i]);
+		row.append(cel);
+	}
+	
+	var celLink = $(celDef).html(link);
+	row.append(celLink);
+	
 	return row;
 }
 
+function drawHeader() {
+	var headers = ['Id', 'Size', 'Code', 'Name', 'Credits', 'Professor'];
+	var link = "";
+	return createRow(headers, true, link);
+}
+
 function drawRow(rowData) {
-	var row = $('<tr>');
-	var cel1 = $('<td>').text(rowData.id);
-	var cel2 = $('<td>').text(rowData.size);
-	var cel3 = $('<td>').text(rowData.course.code);
-	var cel4 = $('<td>').text(rowData.course.name);
-	var cel5 = $('<td>').text(rowData.course.credits);
-	var cel6 = $('<td>').text(rowData.professor.username);
-	row.append(cel1);
-	row.append(cel2);
-	row.append(cel3);
-	row.append(cel4);
-	row.append(cel5);
-	row.append(cel6);
-	return row;
+	var values = [rowData.id, rowData.size, rowData.course.code, rowData.course.name, rowData.course.credits, rowData.professor.username];
+	var link = $('<button>', {
+					text: 'Add',
+					id: 'btn_' + rowData.id,
+					click: function() {
+						// FIXME - switch alert with a post call to server
+						alert('hello ' + rowData.course.code);
+					}
+				}
+			);
+	return createRow(values, false, link);
 }
