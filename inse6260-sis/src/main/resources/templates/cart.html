@@ -8,7 +8,7 @@
 	<script src="/js/cart.js"></script>
 </head>
 <body>
-	<h1 th:inline="text">Cart [[${#httpServletRequest.remoteUser}]]!</h1>
+	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
 	
 	<h3>Search Course</h3>
 	<select id="term_select">
@@ -18,6 +18,10 @@
 	<div id="allCourses">
 	</div>
 	
+	<div id="cart">
+	</div>
+	
+	<button onclick="location.href='http://localhost:8080'">Home</button>
 	
 	<form th:action="@{/logout}" method="post">
 		<input type="submit" value="Sign Out" />
