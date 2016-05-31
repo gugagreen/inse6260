@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import ca.concordia.inse6260.dao.CourseEntryDAO;
@@ -16,7 +18,8 @@ import ca.concordia.inse6260.services.CartService;
 
 @Component
 public class DefaultCartService implements CartService {
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCartService.class);
+
 	@Resource
 	private StudentDAO studentDao;
 	@Resource
@@ -28,8 +31,10 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			records = student.getAcademicRecords();
+		} else {
+			LOGGER.debug("No student found with username: {}.", username);
+			// FIXME - else - throw exception
 		}
-		// FIXME - else - throw exception
 		return records;
 	}
 
@@ -47,13 +52,15 @@ public class DefaultCartService implements CartService {
 				records.add(entry);
 				studentDao.save(student);
 			} else {
+				LOGGER.info("Student {} already has course {} in his academic record.", username, courseEntryId);
 				// FIXME - throw exception
 			}
 		} else {
+			LOGGER.debug("No student found with username: {}.", username);
 			// FIXME - throw exception
 		}
 	}
-	
+
 	private boolean hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
 		boolean hasCourse = false;
 		for (AcademicRecordEntry record : records) {
