@@ -21,4 +21,9 @@ public class CartController {
 	public @ResponseBody Iterable<AcademicRecordEntry> getCartByStudent(@PathVariable("username") final String username) {
 		return cartService.findCartByStudent(username);
 	}
+	
+	@RequestMapping(value="/cart/student/{username}/courseEntry/{courseEntryId}", method=RequestMethod.POST)
+	public void addCourseForStudent(@PathVariable("username") final String username, @PathVariable("courseEntryId") final long courseEntryId) {
+		cartService.addCourseForStudent(username, courseEntryId);
+	}
 }

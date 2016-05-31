@@ -2,6 +2,7 @@ package ca.concordia.inse6260.entities;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class Student extends User {
 	@Column(name="origin", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private StudentOrigin origin;
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
 	private List<AcademicRecordEntry> academicRecords;
 	
 	public StudentOrigin getOrigin() {

@@ -73,10 +73,23 @@ function drawCoursesRow(rowData) {
 	var values = [rowData.id, rowData.size, rowData.course.code, rowData.course.name, rowData.course.credits, rowData.professor.username];
 	var link = $('<button>', {
 					text: 'Add',
-					id: 'btn_' + rowData.id,
+					id: 'btn_add_' + rowData.id,
 					click: function() {
-						// FIXME - switch alert with a post call to server
-						alert('hello ' + rowData.course.code);
+						alert(JSON.stringify(rowData));
+						$.ajax({
+							headers: { 
+						        'Accept': 'application/json',
+						        'Content-Type': 'application/json' 
+						    },
+							type: "POST",
+							url: "http://localhost:8080/cart/student/" + $("#username").val() + "/courseEntry/" + rowData.id, 
+							data: JSON.stringify(rowData), 
+							dataType: 'json',
+							success: 
+								function(result){
+									alert("course added: " + result);
+								}
+						});
 					}
 				}
 			);
@@ -103,7 +116,7 @@ function drawCartRow(rowData) {
 	var values = [rowData.id, rowData.courseEntry.course.code, rowData.grade, rowData.status];
 	var link = $('<button>', {
 					text: 'Delete',
-					id: 'btn_' + rowData.id,
+					id: 'btn_del_' + rowData.id,
 					click: function() {
 						// FIXME - switch alert with a post call to server
 						alert('hello ' + rowData.courseEntry.course.code);
