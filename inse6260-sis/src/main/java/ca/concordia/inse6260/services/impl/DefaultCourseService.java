@@ -48,4 +48,12 @@ public class DefaultCourseService implements CourseService {
 		}
 	}
 
+	public CourseEntryDAO getDao() {
+		return dao;
+	}
+
+	public void setDao(CourseEntryDAO dao) {
+		this.dao = dao;
+	}
+
 }

@@ -18,3 +18,5 @@ You will need to have maven installed to compile the project.
 * To run in debug mode, use:
   * $ mvn spring-boot:run -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
   * Then you can start a new Debug Configuration in your IDE using port 5005.
+* To run tests
+  * $ mvn clean test

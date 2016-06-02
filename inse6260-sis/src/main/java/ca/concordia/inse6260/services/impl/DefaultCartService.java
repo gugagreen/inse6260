@@ -72,4 +72,20 @@ public class DefaultCartService implements CartService {
 		return hasCourse;
 	}
 
+	public StudentDAO getStudentDao() {
+		return studentDao;
+	}
+
+	public void setStudentDao(StudentDAO studentDao) {
+		this.studentDao = studentDao;
+	}
+
+	public CourseEntryDAO getCourseEntryDao() {
+		return courseEntryDao;
+	}
+
+	public void setCourseEntryDao(CourseEntryDAO courseEntryDao) {
+		this.courseEntryDao = courseEntryDao;
+	}
+	
 }
