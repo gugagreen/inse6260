@@ -43,7 +43,7 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			if (!hasCourse(records, courseEntryId)) {
+			if (hasCourse(records, courseEntryId) == null) {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
 				entry.setCourseEntry(courseEntry);
@@ -61,15 +61,35 @@ public class DefaultCartService implements CartService {
 		}
 	}
 
-	private boolean hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
-		boolean hasCourse = false;
+	@Override
+	public void deleteCourseForStudent(String username, long courseEntryId) {
+		Student student = studentDao.findOne(username);
+		if (student != null) {
+			final List<AcademicRecordEntry> records = student.getAcademicRecords();
+			AcademicRecordEntry existentRecord = hasCourse(records, courseEntryId);
+			if (existentRecord != null) {
+				records.remove(existentRecord);
+				studentDao.save(student);
+			} else {
+				LOGGER.info("Student {} does not have course {} in his academic record to be removed.", username, courseEntryId);
+				// FIXME - throw exception
+				// FIXME - handle when course cannot be removed
+			}
+		} else {
+			LOGGER.debug("No student found with username: {}.", username);
+			// FIXME - throw exception
+		}
+	}
+
+	private AcademicRecordEntry hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
+		AcademicRecordEntry existentRecord = null;
 		for (AcademicRecordEntry record : records) {
 			if ((record.getCourseEntry() != null) && (record.getCourseEntry().getId() == courseEntryId)) {
-				hasCourse = true;
+				existentRecord = record;
 				break;
 			}
 		}
-		return hasCourse;
+		return existentRecord;
 	}
 
 	public StudentDAO getStudentDao() {

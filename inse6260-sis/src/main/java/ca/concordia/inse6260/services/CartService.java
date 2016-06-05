@@ -9,4 +9,6 @@ public interface CartService {
 	List<AcademicRecordEntry> findCartByStudent(final String username);
 	
 	void addCourseForStudent(final String username, final long courseEntryId);
+	
+	void deleteCourseForStudent(final String username, final long courseEntryId);
 }

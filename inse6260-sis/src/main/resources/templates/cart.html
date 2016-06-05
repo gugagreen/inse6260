@@ -10,6 +10,9 @@
 <body>
 	<!-- FIXME - change for student select (servlet username when user is student, chosen student when user is admin) -->
 	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
+	<input type="hidden" id="authorities" th:value="${#httpServletRequest.userPrincipal.authorities}"/>
+	<input type="hidden" id="currentStudent"/>
+	
 	
 	<h3>Search Course</h3>
 	<select id="term_select">
@@ -19,7 +22,14 @@
 	<div id="allCourses">
 	</div>
 	
-	<div id="cart">
+	<div id="cartArea">
+		<div id="studentSelectDiv" style="display: none;">
+			<select id="student_select">
+				<option selected="selected" disabled="disabled">Choose a student:</option>
+			</select>
+		</div>
+		<div id="cart">
+		</div>
 	</div>
 	
 	<button onclick="location.href='http://localhost:8080'">Home</button>

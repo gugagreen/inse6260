@@ -26,4 +26,9 @@ public class CartController {
 	public void addCourseForStudent(@PathVariable("username") final String username, @PathVariable("courseEntryId") final long courseEntryId) {
 		cartService.addCourseForStudent(username, courseEntryId);
 	}
+	
+	@RequestMapping(value="/cart/student/{username}/courseEntry/{courseEntryId}", method=RequestMethod.DELETE)
+	public void deleteCourseForStudent(@PathVariable("username") final String username, @PathVariable("courseEntryId") final long courseEntryId) {
+		cartService.deleteCourseForStudent(username, courseEntryId);
+	}
 }
