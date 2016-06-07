@@ -3,19 +3,17 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-	<title>Cart</title>
+	<title>Grades</title>
 	<script src="/js/jquery-2.2.4.js"></script>
 	<script src="/js/user.js"></script>
-	<script src="/js/cart.js"></script>
-	<script src="/js/cartAjax.js"></script>
-	<script src="/js/cartCoursesSelect.js"></script>
-	<script src="/js/cartStudentSelect.js"></script>
+	<script src="/js/grades.js"></script>
+	<script src="/js/gradesAjax.js"></script>
+	<script src="/js/gradesCoursesSelect.js"></script>
 </head>
 <body>
 	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
 	<input type="hidden" id="authorities" th:value="${#httpServletRequest.userPrincipal.authorities}"/>
-	<input type="hidden" id="currentStudent"/>
-	
+	<input type="hidden" id="currentProfessor"/>
 	
 	<h3>Search Course</h3>
 	<select id="term_select">
@@ -25,18 +23,7 @@
 	<div id="allCourses">
 	</div>
 	
-	<div id="cartArea">
-		<div id="studentSelectDiv" style="display: none;">
-			<select id="student_select">
-				<option selected="selected" disabled="disabled">Choose a student:</option>
-			</select>
-		</div>
-		<div id="cart">
-		</div>
-	</div>
-	
 	<button onclick="location.href='http://localhost:8080'">Home</button>
-	
 	<form th:action="@{/logout}" method="post">
 		<input type="submit" value="Sign Out" />
 	</form>

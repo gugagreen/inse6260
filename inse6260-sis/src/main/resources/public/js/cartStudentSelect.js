@@ -1,22 +1,4 @@
 
-
-function isStudent() {
-	return hasRole("ROLE_STUDENT");
-}
-
-function isAdmin() {
-	return hasRole("ROLE_ADMIN");
-}
-
-function hasRole(roleName) {
-	var roles = $("#authorities").val();
-	if (roles.indexOf(roleName) > -1) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 /**
  * Whenever #student_select changes, populates #currentStudent with student username and loads student cart 
  */

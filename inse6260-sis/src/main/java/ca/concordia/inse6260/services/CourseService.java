@@ -20,4 +20,15 @@ public interface CourseService {
 	 *             if String is in wrong format.
 	 */
 	List<CourseEntry> findBySeason(final String yearSeason);
+	
+	/**
+	 * Find course entry for a given professor by string with year and season.
+	 * @param yearSeason The search string in the format "{season}{year}" where {season} is any value in {@link Season} and {year} is a 4
+	 *            digits number (e.g. "SUMMER2016")
+	 * @param professorId	The professor teaching the class/
+	 * @return The list of matching CourseEntry.
+	 * @throws IllegalArgumentException
+	 *             if String is in wrong format.
+	 */
+	List<CourseEntry> findBySeasonProfessor(final String yearSeason, final String professorId);
 }

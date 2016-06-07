@@ -15,15 +15,21 @@ import ca.concordia.inse6260.services.CourseService;
 public class CourseEntryController {
 
 	@Resource
-	private CourseService courseService; 
-	
-	@RequestMapping(value="/courses", method=RequestMethod.GET)
+	private CourseService courseService;
+
+	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public @ResponseBody Iterable<CourseEntry> getCourses() {
 		return courseService.findAll();
 	}
-	
-	@RequestMapping(value="/courses/{yearSeason}", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/courses/{yearSeason}", method = RequestMethod.GET)
 	public @ResponseBody Iterable<CourseEntry> getCoursesBySeason(@PathVariable("yearSeason") final String yearSeason) {
 		return courseService.findBySeason(yearSeason);
+	}
+
+	@RequestMapping(value = "/courses/{yearSeason}/professor/{username}", method = RequestMethod.GET)
+	public @ResponseBody Iterable<CourseEntry> getCoursesBySeasonProfessor(@PathVariable("yearSeason") final String yearSeason,
+			@PathVariable("username") final String username) {
+		return courseService.findBySeasonProfessor(yearSeason, username);
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
+import ca.concordia.inse6260.entities.User;
 import ca.concordia.inse6260.services.CourseService;
 
 @Component
@@ -36,6 +37,27 @@ public class DefaultCourseService implements CourseService {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Integer.parseInt(year), 0, 1, 0, 0, 0);
 		courses = dao.findBySeason(season, cal);
+		return courses;
+	}
+
+	@Override
+	public List<CourseEntry> findBySeasonProfessor(String yearSeason, String professorId) {
+		LOGGER.debug("Find course by year season {} and professor {}", yearSeason, professorId);
+		
+		if (professorId == null || professorId.trim().isEmpty()) {
+			throw new IllegalArgumentException("Invalid professorId: " + professorId);
+		}
+		
+		List<CourseEntry> allCourses = findBySeason(yearSeason);
+		List<CourseEntry> courses = new ArrayList<CourseEntry>();
+		if (allCourses != null && !allCourses.isEmpty()) {
+			for (CourseEntry entry : allCourses) {
+				User prof = entry.getProfessor();
+				if (prof != null && prof.getUsername() != null && professorId.equals(prof.getUsername())) {
+					courses.add(entry);
+				}
+			}
+		}
 		return courses;
 	}
 
