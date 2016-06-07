@@ -8,4 +8,8 @@ public interface UserService {
 	 * @return
 	 */
 	Iterable<Student> findAllStudents();
+
+	void changePasswordForUser(String username, String password, String newPassword);
+	
+	
 }
