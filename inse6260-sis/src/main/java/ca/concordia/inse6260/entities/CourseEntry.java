@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @NamedQuery(name = "CourseEntry.findBySeason", query = "SELECT ce FROM CourseEntry ce, CourseDates cd "
 		+ "WHERE ce.dates = cd AND cd.season = ?1 AND cd.startDate >= ?2")
@@ -35,6 +37,7 @@ public class CourseEntry {
 	private int size;
 	@ManyToOne
 	private User professor;
+	@JsonIgnore
 	@ManyToMany
 	private List<User> students;
 

@@ -51,6 +51,10 @@ public class DefaultCartService implements CartService {
 				entry.setStatus(AcademicRecordStatus.REGISTERED);
 				records.add(entry);
 				studentDao.save(student);
+				
+				// also add student to course entry list 
+				courseEntry.getStudents().add(student);
+				courseEntryDao.save(courseEntry);
 			} else {
 				LOGGER.info("Student {} already has course {} in his academic record.", username, courseEntryId);
 				// FIXME - throw exception
@@ -70,6 +74,11 @@ public class DefaultCartService implements CartService {
 			if (existentRecord != null) {
 				records.remove(existentRecord);
 				studentDao.save(student);
+				
+				// also remove student from course entry list
+				CourseEntry courseEntry = existentRecord.getCourseEntry();
+				courseEntry.getStudents().remove(student);
+				courseEntryDao.save(courseEntry);
 			} else {
 				LOGGER.info("Student {} does not have course {} in his academic record to be removed.", username, courseEntryId);
 				// FIXME - throw exception
