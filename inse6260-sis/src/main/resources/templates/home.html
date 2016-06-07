@@ -10,11 +10,14 @@
 
 	<div style="width: 100%; display: table;">
 		<div style="display: table-row">
-			<div style="width: 600px; display: table-cell;">
+			<div style="width: 600px; display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
 				<a th:href="@{/cart}">Cart</a>
 			</div>
-			<div style="display: table-cell;">
+			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
 				<a th:href="@{/transcript}">Transcript</a>
+			</div>
+			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_PROFESSOR')">
+				<a th:href="@{/grades}">Grades</a>
 			</div>
 		</div>
 	</div>
