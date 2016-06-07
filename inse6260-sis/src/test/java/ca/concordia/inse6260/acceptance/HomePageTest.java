@@ -36,8 +36,6 @@ public class HomePageTest {
 	public void adminShouldBeAbleToAddRemoveFromCart() {
 		// go to home page
 		browser.get("http://localhost:8080/");
-		// try to go to cart
-		goToCart();
 		// should redirect to login page
 		Assert.assertEquals("Login Page", browser.getTitle());
 		// login as admin
