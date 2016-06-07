@@ -6,8 +6,6 @@ function handleModifyStudent() {
 	$("#student_select").change(function() {
 		$('#currentStudent').val(this.value);
 		ajaxLoadCartForStudent(this.value);
-		// FIXME - re-populate courses to adjust add button's function
-		// populateCourses(
 	});
 }
 

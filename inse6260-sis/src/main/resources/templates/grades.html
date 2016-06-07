@@ -16,11 +16,19 @@
 	<input type="hidden" id="currentProfessor"/>
 	
 	<h3>Search Course</h3>
-	<select id="term_select">
-		<option selected="selected" disabled="disabled">Choose a term:</option>
-	</select>
+	<div id="termArea">
+		<select id="term_select">
+			<option selected="selected" disabled="disabled">Choose a term:</option>
+		</select>
+		
+		<div id="allCourses">
+		</div>
+	</div>
 	
-	<div id="allCourses">
+	<div id="professorSelectDiv" style="display: none;">
+		<select id="professor_select">
+			<option selected="selected" disabled="disabled">Choose a professor:</option>
+		</select>
 	</div>
 	
 	<button onclick="location.href='http://localhost:8080'">Home</button>

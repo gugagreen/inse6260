@@ -23,3 +23,11 @@ function ajaxLoadCoursesForSeason(yearSeason, professor) {
 		populateCourses(data);
 	});
 }
+
+function ajaxLoadProfessors() {
+	$.ajax({
+		url : ROOT_PATH + "/user/professor/"
+	}).then(function(data) {
+		populateProfessorsSelect(data);
+	});
+}

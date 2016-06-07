@@ -8,6 +8,8 @@ $(document).ready(function() {
 	loadCurrentProfessor();
 	// handle modify season
 	handleModifySeason();
+	// handle modify professor
+	handleModifyProfessor();
 });
 
 function populateCourseDatesSelect(data) {
@@ -36,14 +38,19 @@ function loadCurrentProfessor() {
 		var professorId = $("#username").val();
 		$('#currentProfessor').val(professorId);
 	} else if (isAdmin()) {
-		// FIXME - load combobox
-		alert("to be implemented");
-		//$('#professorSelectDiv').show();
-		//ajaxLoadStudents();
+		$('#professorSelectDiv').show();
+		ajaxLoadProfessors();
 	}
 }
 
 
 function getCurrentProfessor() {
 	return $("#currentProfessor").val();
+}
+
+function populateProfessorsSelect(data) {
+	var select = $('#professor_select');
+	for (var i = 0; i < data.length; i++) {
+		select.append($("<option />").val(data[i].username).text(data[i].username));
+	}
 }

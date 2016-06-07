@@ -1,6 +1,7 @@
 package ca.concordia.inse6260.services;
 
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.entities.User;
 
 public interface UserService {
 	/**
@@ -8,4 +9,10 @@ public interface UserService {
 	 * @return
 	 */
 	Iterable<Student> findAllStudents();
+	
+	/**
+	 * Find all professors in system.
+	 * @return
+	 */
+	Iterable<User> findAllProfessors();
 }

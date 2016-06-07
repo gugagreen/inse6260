@@ -5,7 +5,20 @@
  */
 function handleModifySeason() {
 	$("#term_select").change(function() {
-		ajaxLoadCoursesForSeason(this.value, getCurrentProfessor());
+		if (getCurrentProfessor() !== "") {
+			ajaxLoadCoursesForSeason(this.value, getCurrentProfessor());
+		}
+	});
+}
+
+function handleModifyProfessor() {
+	$("#professor_select").change(function() {
+		$('#currentProfessor').val(this.value);
+		// check if term is not null
+		if ($("#term_select").val()) {
+			ajaxLoadCoursesForSeason($("#term_select").val(), this.value);
+		}
+		
 	});
 }
 
