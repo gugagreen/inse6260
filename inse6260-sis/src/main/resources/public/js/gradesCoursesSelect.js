@@ -44,13 +44,12 @@ function drawCoursesHeader() {
 	return createRow(headers, true, link);
 }
 
-// FIXME - instead of add, should select a course
 function drawCoursesRow(rowData) {
 	var values = [rowData.id, rowData.size, rowData.course.code, rowData.course.name, rowData.course.credits, rowData.professor.username];
 	var link = $('<button>', {
-					text: 'Add',
-					id: 'btn_add_' + rowData.id,
-					click: function() {ajaxAddCourseForStudent(getCurrentStudent(), rowData.id)}
+					text: 'Open',
+					id: 'btn_open_' + rowData.id,
+					click: function() {ajaxShowCourse(rowData)}
 				}
 			);
 	return createRow(values, false, link);
