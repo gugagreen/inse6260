@@ -76,12 +76,6 @@ public class HomePageTest {
 		// remove course from student cart
 		WebElement deleteButton = findDeleteButton(courseName);
 		deleteButton.click();
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// check if course was removed
 		cartEntry = findCartEntry(courseName);
 		Assert.assertNull(cartEntry);
