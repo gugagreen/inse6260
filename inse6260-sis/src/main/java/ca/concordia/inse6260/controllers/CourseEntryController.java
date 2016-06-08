@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.concordia.inse6260.entities.CourseEntry;
+import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.services.CourseService;
 
 @RestController
@@ -31,5 +32,10 @@ public class CourseEntryController {
 	public @ResponseBody Iterable<CourseEntry> getCoursesBySeasonProfessor(@PathVariable("yearSeason") final String yearSeason,
 			@PathVariable("username") final String username) {
 		return courseService.findBySeasonProfessor(yearSeason, username);
+	}
+	
+	@RequestMapping(value = "/courses/{courseEntryId}/student", method = RequestMethod.GET)
+	public @ResponseBody Iterable<Student> getStudentsForCourse(@PathVariable("courseEntryId") final Long courseEntryId) {
+		return courseService.getStudentsForCourse(courseEntryId);
 	}
 }

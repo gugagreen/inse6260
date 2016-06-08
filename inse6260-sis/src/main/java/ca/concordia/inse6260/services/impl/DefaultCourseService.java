@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
+import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.User;
 import ca.concordia.inse6260.services.CourseService;
 
@@ -59,6 +60,17 @@ public class DefaultCourseService implements CourseService {
 			}
 		}
 		return courses;
+	}
+
+	@Override
+	public List<Student> getStudentsForCourse(Long courseEntryId) {
+		List<Student> students = null;
+		CourseEntry entry = dao.findOne(courseEntryId);
+		if (entry != null) {
+			students = entry.getStudents();
+		}
+		
+		return students;
 	}
 
 	private void validateYearSeason(final String yearSeason) {

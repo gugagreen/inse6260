@@ -4,6 +4,7 @@ import java.util.List;
 
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
+import ca.concordia.inse6260.entities.Student;
 
 public interface CourseService {
 
@@ -25,10 +26,17 @@ public interface CourseService {
 	 * Find course entry for a given professor by string with year and season.
 	 * @param yearSeason The search string in the format "{season}{year}" where {season} is any value in {@link Season} and {year} is a 4
 	 *            digits number (e.g. "SUMMER2016")
-	 * @param professorId	The professor teaching the class/
+	 * @param professorId	The professor teaching the class.
 	 * @return The list of matching CourseEntry.
 	 * @throws IllegalArgumentException
 	 *             if String is in wrong format.
 	 */
 	List<CourseEntry> findBySeasonProfessor(final String yearSeason, final String professorId);
+	
+	/**
+	 * Find students for a course entry.
+	 * @param courseEntryId	The course entry id.
+	 * @return	List of students subscribed to course.
+	 */
+	List<Student> getStudentsForCourse(final Long courseEntryId);
 }

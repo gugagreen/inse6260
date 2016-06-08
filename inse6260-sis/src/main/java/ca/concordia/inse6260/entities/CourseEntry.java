@@ -39,11 +39,11 @@ public class CourseEntry {
 	private User professor;
 	@JsonIgnore
 	@ManyToMany
-	private List<User> students;
+	private List<Student> students;
 
 	public CourseEntry() {
 		super();
-		setStudents(new ArrayList<User>());
+		setStudents(new ArrayList<Student>());
 	}
 
 	@Override
@@ -100,11 +100,11 @@ public class CourseEntry {
 		this.professor = professor;
 	}
 
-	public List<User> getStudents() {
+	public List<Student> getStudents() {
 		return students;
 	}
 
-	public void setStudents(List<User> students) {
+	public void setStudents(List<Student> students) {
 		this.students = students;
 	}
 }

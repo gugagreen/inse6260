@@ -31,3 +31,20 @@ function ajaxLoadProfessors() {
 		populateProfessorsSelect(data);
 	});
 }
+
+function ajaxShowCourse(courseEntry) {
+	if (courseEntry && courseEntry.id) {
+		$.ajax({
+			headers: { 
+		        'Accept': 'application/json',
+		        'Content-Type': 'application/json' 
+		    },
+			type: "GET",
+			url: ROOT_PATH + "/courses/" + courseEntry.id + "/student/", 
+			success: 
+				function(students){
+					populateCourse(students, courseEntry);
+				}
+		});
+	}
+}
