@@ -30,6 +30,7 @@ public class HomePageTest {
 	@Before
 	public void setup() {
 		browser = new FirefoxDriver();
+		browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);	
 	}
 	
 	@Test
@@ -75,6 +76,12 @@ public class HomePageTest {
 		// remove course from student cart
 		WebElement deleteButton = findDeleteButton(courseName);
 		deleteButton.click();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// check if course was removed
 		cartEntry = findCartEntry(courseName);
 		Assert.assertNull(cartEntry);
@@ -84,7 +91,6 @@ public class HomePageTest {
 	
 	private void goToCart() {
 		browser.findElement(By.linkText("Cart")).click();
-		browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 	}
 	
 	private void login(final String username, final String password) {
@@ -93,7 +99,6 @@ public class HomePageTest {
 		WebElement pw_txt = browser.findElement(By.name("password"));
 		pw_txt.sendKeys(password);
 		browser.findElement(By.cssSelector("input[type='submit']")).click();
-		browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 	}
 	
 	private void selectTerm(final String term) {
