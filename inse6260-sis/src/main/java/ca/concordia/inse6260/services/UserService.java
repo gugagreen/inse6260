@@ -15,4 +15,6 @@ public interface UserService {
 	 * @return
 	 */
 	Iterable<User> findAllProfessors();
+
+	void changePasswordForUser(String username, String password, String newPassword);
 }

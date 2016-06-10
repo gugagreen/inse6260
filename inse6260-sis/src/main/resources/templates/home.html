@@ -25,6 +25,9 @@
 			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_PROFESSOR')">
 				<a th:href="@{/grades}">Grades</a>
 			</div>
+			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
+				<a th:href="@{/changePassword}">Change Password</a>
+			</div>
 		</div>
 	</div>
 	
