@@ -18,9 +18,11 @@ public class AccountRegistrationController {
 	
     // change user password
     @RequestMapping(value = "/changePassword/user/{username}/password/{password}/newPassword/{newPassword}", method = RequestMethod.POST)
-    public @ResponseBody void changePasswordForUser(@PathVariable("username") final String username,@PathVariable("password") String password,@PathVariable("newPassword") String newPassword){
-    	userService.changePasswordForUser(username, password, newPassword);
-    }
-	
-	
+    public @ResponseBody String changePasswordForUser(@PathVariable("username") final String username,@PathVariable("password") String password,@PathVariable("newPassword") String newPassword){
+    	
+    	String answer = userService.changePasswordForUser(username, password, newPassword);
+    	
+		return answer;	
+
+    }	
 }

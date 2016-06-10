@@ -53,7 +53,7 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-		public void changePasswordForUser(final String username, final String password, final String newPassword) {
+		public String changePasswordForUser(final String username, final String password, final String newPassword) {
 			User user = userDao.findOne(username);
 			if (user != null) {
 				final String storedPassword = user.getPassword();
@@ -61,16 +61,16 @@ public class DefaultUserService implements UserService {
 				if (passwordCheck) {
 					
 					user.setPassword(newPassword);;
-					// TODO - treat other status
 					userDao.save(user);
 				} 
 				else {
 					LOGGER.info("Incorrect user password: {}", username);
-					// FIXME - throw exception
+					return "Error: "+ "Incorrect user password!";
 				}
 			} else {
 				LOGGER.debug("No user found with username: {}.", username);
-				// FIXME - throw exception
+				return "Error: No user found with username: "+ username;
 			}
+			return "OK";
 		}
 }
