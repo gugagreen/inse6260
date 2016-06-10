@@ -8,6 +8,7 @@ function savePass(){
     var passConfirm = $("#passConfirm").val();
     if(pass==="" ||newPass===""||passConfirm===""){
     	alert("Please Fill All Required Fields");
+    	return
     }
     if(!(newPass === passConfirm)) {
       $("#error").show();
