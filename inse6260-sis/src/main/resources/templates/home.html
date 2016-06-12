@@ -6,34 +6,45 @@
 	<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
 <title>SIS</title>
 </head>
-<body>
-	<h1>Welcome!</h1>
-
-	<div style="width: 100%; display: table;">
-		<div style="display: table-row">
-			<div style="width: 600px; display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
-				<a th:href="@{/cart}">Cart</a>
-			</div>
-			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
-				<a th:href="@{/transcript}">Transcript</a>
-			</div>
-			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
-				<a th:href="@{/payment}">Payment</a>
-			</div>
-			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_STUDENT')">
-				<a th:href="@{/schedule}">Schedule</a>
-			</div>
-			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_PROFESSOR')">
-				<a th:href="@{/grades}">Grades</a>
-			</div>
-			<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
-				<a th:href="@{/changePassword}">Change Password</a>
-			</div>
+<body>	
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6  h1 text-right">
+			<form th:action="@{/logout}" method="post">
+				<input class="btn btn-primary" type="submit" value="Sign Out" />
+			</form>
+		</div>
+		<div class="col-md-6 h1 text-left">
+			<h1>Welcome!</h1>
 		</div>
 	</div>
-	
-	<form th:action="@{/logout}" method="post">
-		<input type="submit" value="Sign Out" />
-	</form>
+
+        <div class="row text-center">
+			<div style="width: 100%; display: table;">
+				<div style="display: table-row">
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
+						<a th:href="@{/cart}">Cart</a>
+					</div>
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
+						<a th:href="@{/transcript}">Transcript</a>
+					</div>
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
+						<a th:href="@{/payment}">Payment</a>
+					</div>
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_STUDENT')">
+						<a th:href="@{/schedule}">Schedule</a>
+					</div>
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_PROFESSOR')">
+						<a th:href="@{/grades}">Grades</a>
+					</div>
+					<div style="display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')">
+						<a th:href="@{/changePassword}">Change Password</a>
+					</div>
+				</div>
+			</div>
+			
+
+		</div>
+	</div>
 </body>
 </html>
