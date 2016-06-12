@@ -16,9 +16,20 @@
 	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
 	<input type="hidden" id="authorities" th:value="${#httpServletRequest.userPrincipal.authorities}"/>
 	<input type="hidden" id="currentStudent"/>
+
+	<div class="container-fluid">
 	
+		<div class="row">
+		<div class="col-md-6  h1 text-right">
+			<form th:action="@{/logout}" method="post">
+				<input class="btn btn-primary" type="submit" value="Sign Out" />
+			</form>
+		</div>
+		<div class="col-md-6 h1 text-left">
+			<h3>Search Course</h3>
+		</div>
+	</div>	
 	
-	<h3>Search Course</h3>
 	<div id="termArea">
 		<select id="term_select">
 			<option selected="selected" disabled="disabled">Choose a term:</option>
@@ -38,10 +49,9 @@
 		</div>
 	</div>
 	
-	<button onclick="location.href='http://localhost:8080'">Home</button>
+	<button class="btn btn-default" onclick="location.href='http://localhost:8080'">Home</button>
 	
-	<form th:action="@{/logout}" method="post">
-		<input type="submit" value="Sign Out" />
-	</form>
+	</div>
+	
 </body>
 </html>
