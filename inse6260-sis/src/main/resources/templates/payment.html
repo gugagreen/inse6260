@@ -7,10 +7,20 @@
 <title>Payment</title>
 </head>
 <body>
-	<h1 th:inline="text">Payment [[${#httpServletRequest.remoteUser}]]!</h1>
-	<button onclick="location.href='http://localhost:8080'">Home</button>
-	<form th:action="@{/logout}" method="post">
-		<input type="submit" value="Sign Out" />
-	</form>
+	<div class="container-fluid">
+	
+			<div class="row">
+			<div class="col-md-6  h1 text-right">
+				<form th:action="@{/logout}" method="post">
+					<input class="btn btn-primary" type="submit" value="Sign Out" />
+				</form>
+			</div>
+			<div class="col-md-6 h1 text-left">
+				<h1 th:inline="text">Payment [[${#httpServletRequest.remoteUser}]]!</h1>
+			</div>
+		</div>
+
+	<button class="btn btn-default" onclick="location.href='http://localhost:8080'">Home</button>
+	</div>
 </body>
 </html>
