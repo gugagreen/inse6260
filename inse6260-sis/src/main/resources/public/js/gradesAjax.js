@@ -48,3 +48,24 @@ function ajaxShowCourse(courseEntry) {
 		});
 	}
 }
+
+function ajaxUpdateGradesForCourse(courseEntryId, studentGrades) {
+	if (courseEntryId && studentGrades) {
+		$.ajax({
+			headers: {
+		        'Content-Type': 'application/json; charset=utf-8' 
+		    },
+			type: "PUT",
+			url: ROOT_PATH + "/courses/" + courseEntryId + "/updateGrades/", 
+			//dataType: 'json',
+			data: studentGrades,
+			success: 
+				function(data){
+					alert("grades updated");
+				},
+			error: function(errorThrown){
+		        alert("error: " + errorThrown);
+			}
+		});
+	}
+}

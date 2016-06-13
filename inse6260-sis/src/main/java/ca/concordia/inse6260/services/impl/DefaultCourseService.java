@@ -10,10 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import ca.concordia.inse6260.dao.AcademicRecordEntryDAO;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
+import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.entities.StudentGrade;
 import ca.concordia.inse6260.entities.User;
 import ca.concordia.inse6260.services.CourseService;
 
@@ -23,6 +26,8 @@ public class DefaultCourseService implements CourseService {
 
 	@Resource
 	private CourseEntryDAO dao;
+	@Resource
+	private AcademicRecordEntryDAO recordDao;
 
 	public Iterable<CourseEntry> findAll() {
 		return dao.findAll();
@@ -44,11 +49,11 @@ public class DefaultCourseService implements CourseService {
 	@Override
 	public List<CourseEntry> findBySeasonProfessor(String yearSeason, String professorId) {
 		LOGGER.debug("Find course by year season {} and professor {}", yearSeason, professorId);
-		
+
 		if (professorId == null || professorId.trim().isEmpty()) {
 			throw new IllegalArgumentException("Invalid professorId: " + professorId);
 		}
-		
+
 		List<CourseEntry> allCourses = findBySeason(yearSeason);
 		List<CourseEntry> courses = new ArrayList<CourseEntry>();
 		if (allCourses != null && !allCourses.isEmpty()) {
@@ -69,8 +74,28 @@ public class DefaultCourseService implements CourseService {
 		if (entry != null) {
 			students = entry.getStudents();
 		}
-		
+
 		return students;
+	}
+
+	@Override
+	public void updateGradesForCourse(long courseEntryId, StudentGrade[] studentGrades) {
+		CourseEntry entry = dao.findOne(courseEntryId);
+		if (studentGrades != null && entry != null) {
+			for (StudentGrade sGrade : studentGrades) {
+				if (sGrade != null) {
+					Student student = findStudentInCourse(entry, sGrade);
+					AcademicRecordEntry record = findRecordInStudent(courseEntryId, student);
+					record.setGrade(sGrade.getGrade());
+					recordDao.save(record);
+				} else {
+					throw new IllegalArgumentException("StudentGrade cannot be null!");
+				}
+			}
+		} else {
+			throw new IllegalArgumentException(
+					String.format("Either courseEntryId [%d] or studentGrades [%s] is invalid", courseEntryId, studentGrades));
+		}
 	}
 
 	private void validateYearSeason(final String yearSeason) {
@@ -82,12 +107,50 @@ public class DefaultCourseService implements CourseService {
 		}
 	}
 
+	private Student findStudentInCourse(final CourseEntry entry, final StudentGrade sGrade) {
+		Student found = null;
+		for (Student student : entry.getStudents()) {
+			if (student.getUsername().equals(sGrade.getStudentUsername())) {
+				found = student;
+				break;
+			}
+		}
+		if (found == null) {
+			throw new IllegalArgumentException(String.format("Student %s not found for course entry %d.",
+					sGrade.getStudentUsername(), entry.getId()));
+		}
+		return found;
+	}
+
+	private AcademicRecordEntry findRecordInStudent(long courseEntryId, Student student) {
+		AcademicRecordEntry found = null;
+		for (AcademicRecordEntry record : student.getAcademicRecords()) {
+			if (record.getCourseEntry() != null && record.getCourseEntry().getId() == courseEntryId) {
+				found = record;
+				break;
+			}
+		}
+		if (found == null) {
+			throw new IllegalArgumentException(String.format("Student %s does not have record for course entry %d.",
+					student.getUsername(), courseEntryId));
+		}
+		return found;
+	}
+
 	public CourseEntryDAO getDao() {
 		return dao;
 	}
 
 	public void setDao(CourseEntryDAO dao) {
 		this.dao = dao;
+	}
+
+	public AcademicRecordEntryDAO getRecordDao() {
+		return recordDao;
+	}
+
+	public void setRecordDao(AcademicRecordEntryDAO recordDao) {
+		this.recordDao = recordDao;
 	}
 
 }

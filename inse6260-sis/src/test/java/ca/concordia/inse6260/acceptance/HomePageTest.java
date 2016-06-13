@@ -1,7 +1,6 @@
 package ca.concordia.inse6260.acceptance;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;

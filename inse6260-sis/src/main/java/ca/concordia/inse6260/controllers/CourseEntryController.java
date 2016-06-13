@@ -3,6 +3,7 @@ package ca.concordia.inse6260.controllers;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.entities.StudentGrade;
 import ca.concordia.inse6260.services.CourseService;
 
 @RestController
@@ -37,5 +39,10 @@ public class CourseEntryController {
 	@RequestMapping(value = "/courses/{courseEntryId}/student", method = RequestMethod.GET)
 	public @ResponseBody Iterable<Student> getStudentsForCourse(@PathVariable("courseEntryId") final Long courseEntryId) {
 		return courseService.getStudentsForCourse(courseEntryId);
+	}
+	
+	@RequestMapping(value="/courses/{courseEntryId}/updateGrades", method=RequestMethod.PUT)
+	public void updateGradesForCourse(@PathVariable("courseEntryId") final long courseEntryId, @RequestBody final StudentGrade[] studentGrades) {
+		courseService.updateGradesForCourse(courseEntryId, studentGrades);
 	}
 }
