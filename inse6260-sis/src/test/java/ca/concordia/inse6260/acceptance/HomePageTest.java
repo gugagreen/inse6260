@@ -1,50 +1,32 @@
 package ca.concordia.inse6260.acceptance;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ca.concordia.inse6260.Inse6260SisApplication;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Inse6260SisApplication.class)
-@WebIntegrationTest(value = "server.port=8080")
-@SeleniumTest
-public class HomePageTest {
-
-	private WebDriver browser;
+public class HomePageTest extends AbstractSisAcceptanceTest {
 
 	@Before
 	public void setup() {
-		browser = new FirefoxDriver();
-		browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);	
+		super.setup();
 	}
 	
 	@Test
 	public void adminShouldBeAbleToAddRemoveFromCart() {
 		// go to home page
-		browser.get("http://localhost:8080/");
+		gotoHomePage();
 		// should redirect to login page
-		Assert.assertEquals("Login Page", browser.getTitle());
+		Assert.assertEquals("Login Page", driver.getTitle());
 		// login as admin
 		login("admin", "1234");
 		// should redirect to home page
-		Assert.assertEquals("SIS", browser.getTitle());
+		Assert.assertEquals("SIS", driver.getTitle());
 		// now should be able to go to cart page
 		goToCart();
-		Assert.assertEquals("Cart", browser.getTitle());
+		Assert.assertEquals("Cart", driver.getTitle());
 		
 		final String courseName = "SOEN691";
 		// before select term, course should not be there
@@ -79,28 +61,20 @@ public class HomePageTest {
 		cartEntry = findCartEntry(courseName);
 		Assert.assertNull(cartEntry);
 		
-		browser.quit();
+		driver.quit();
 	}
 	
 	private void goToCart() {
-		browser.findElement(By.linkText("Cart")).click();
-	}
-	
-	private void login(final String username, final String password) {
-		WebElement username_txt = browser.findElement(By.name("username"));
-		username_txt.sendKeys(username);
-		WebElement pw_txt = browser.findElement(By.name("password"));
-		pw_txt.sendKeys(password);
-		browser.findElement(By.cssSelector("input[type='submit']")).click();
+		driver.findElement(By.linkText("Cart")).click();
 	}
 	
 	private void selectTerm(final String term) {
-		Select term_select = new Select(browser.findElement(By.id("term_select")));
+		Select term_select = new Select(driver.findElement(By.id("term_select")));
 		term_select.selectByVisibleText(term);
 	}
 	
 	private void selectStudent(final String studentId) {
-		Select term_select = new Select(browser.findElement(By.id("student_select")));
+		Select term_select = new Select(driver.findElement(By.id("student_select")));
 		term_select.selectByVisibleText(studentId);
 	}
 	
@@ -122,14 +96,5 @@ public class HomePageTest {
 	private WebElement findDeleteButton(final String courseName) {
 		String buttonXPath = "//div[@id='cart']/table/tbody/tr/td[normalize-space() ='" + courseName + "']/../td[5]";
 		return findByXPath(buttonXPath);
-	}
-	
-	private WebElement findByXPath(final String xPath) {
-		WebElement element = null;
-		List<WebElement> list = browser.findElements(By.xpath(xPath));
-		if (list.size() > 0) {
-			element = list.get(0);
-		}
-		return element;
 	}
 }
