@@ -34,8 +34,7 @@ public class DefaultCartService implements CartService {
 		if (student != null) {
 			records = student.getAcademicRecords();
 		} else {
-			LOGGER.debug("No student found with username: {}.", username);
-			// FIXME - else - throw exception
+			noStudentFound(username);
 		}
 		return records;
 	}
@@ -58,12 +57,13 @@ public class DefaultCartService implements CartService {
 				courseEntry.getStudents().add(student);
 				courseEntryDao.save(courseEntry);
 			} else {
-				LOGGER.info("Student {} already has course {} in his academic record.", username, courseEntryId);
-				// FIXME - throw exception
+				String baseMsg = "Student %s already has course %d in his academic record.";
+				String message = String.format(baseMsg, username, courseEntryId);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
 			}
 		} else {
-			LOGGER.debug("No student found with username: {}.", username);
-			// FIXME - throw exception
+			noStudentFound(username);
 		}
 	}
 	
@@ -101,12 +101,13 @@ public class DefaultCartService implements CartService {
 					throw new CannotPerformOperationException(message);
 				}
 			} else {
-				LOGGER.debug("Student {} does not have course {} in his academic record to be removed.", username, courseEntryId);
-				// FIXME - throw exception
+				String baseMsg = "Student %s does not have course %d in his academic record to be removed.";
+				String message = String.format(baseMsg, username, courseEntryId);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
 			}
 		} else {
-			LOGGER.debug("No student found with username: {}.", username);
-			// FIXME - throw exception
+			noStudentFound(username);
 		}
 	}
 
@@ -119,6 +120,13 @@ public class DefaultCartService implements CartService {
 			}
 		}
 		return existentRecord;
+	}
+	
+	private void noStudentFound(final String username) {
+		String baseMsg = "No student found with username: %s.";
+		String message = String.format(baseMsg, username);
+		LOGGER.debug(message);
+		throw new CannotPerformOperationException(message);
 	}
 
 	public StudentDAO getStudentDao() {

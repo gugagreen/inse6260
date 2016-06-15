@@ -19,20 +19,6 @@ function populateCourseDatesSelect(data) {
 	}
 }
 
-function createRow(rowData, isHeader, link) {
-	var row = $('<tr>');
-	var celDef = (isHeader) ? ('<th>'): ('<td>');
-	for (var i = 0; i < rowData.length; i++) {
-		var cel = $(celDef).text(rowData[i]);
-		row.append(cel);
-	}
-	
-	var celLink = $(celDef).html(link);
-	row.append(celLink);
-	
-	return row;
-}
-
 function loadCurrentProfessor() {
 	if (isProfessor()) {
 		var professorId = $("#username").val();
@@ -41,11 +27,6 @@ function loadCurrentProfessor() {
 		$('#professorSelectDiv').show();
 		ajaxLoadProfessors();
 	}
-}
-
-
-function getCurrentProfessor() {
-	return $("#currentProfessor").val();
 }
 
 function populateProfessorsSelect(data) {

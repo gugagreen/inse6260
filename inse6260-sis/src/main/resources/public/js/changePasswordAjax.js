@@ -10,10 +10,14 @@ function AjaxChangePass(username, password, newPassword) {
 		success: 
 			function(data){
 				if(data==='OK'){
-					alert("Password Changed!");
+					showSuccessMessage("Password Changed!");
 				}else{
-					alert(data);
+					showErrorMessage(data);
 				};
+			},
+		error: 
+			function(errorMsg) {
+				showErrorMessage(errorMsg.responseText);
 			}
 	});
 }

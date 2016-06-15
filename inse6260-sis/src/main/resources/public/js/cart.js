@@ -33,27 +33,9 @@ function populateCourseDatesSelect(data) {
 	}
 }
 
-function createRow(rowData, isHeader, link) {
-	var row = $('<tr>');
-	var celDef = (isHeader) ? ('<th>'): ('<td>');
-	for (var i = 0; i < rowData.length; i++) {
-		var cel = $(celDef).text(rowData[i]);
-		row.append(cel);
-	}
-	
-	var celLink = $(celDef).html(link);
-	row.append(celLink);
-	
-	return row;
-}
-
 function populateStudentsSelect(data) {
 	var select = $('#student_select');
 	for (var i = 0; i < data.length; i++) {
 		select.append($("<option />").val(data[i].username).text(data[i].username));
 	}
-}
-
-function getCurrentStudent() {
-	return $("#currentStudent").val();
 }

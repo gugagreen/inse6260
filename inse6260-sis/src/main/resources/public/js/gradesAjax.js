@@ -44,6 +44,10 @@ function ajaxShowCourse(courseEntry) {
 			success: 
 				function(students){
 					populateCourse(students, courseEntry);
+				},
+			error: 
+				function(errorMsg) {
+					showErrorMessage(errorMsg.responseText);
 				}
 		});
 	}
@@ -56,8 +60,7 @@ function ajaxUpdateGradesForCourse(courseEntryId, studentGrades) {
 		        'Content-Type': 'application/json; charset=utf-8' 
 		    },
 			type: "PUT",
-			url: ROOT_PATH + "/courses/" + courseEntryId + "/updateGrades/", 
-			//dataType: 'json',
+			url: ROOT_PATH + "/courses/" + courseEntryId + "/updateGrades/",
 			data: studentGrades,
 			success: 
 				function(data){

@@ -20,3 +20,11 @@ function hasRole(roleName) {
 		return false;
 	}
 }
+
+function getCurrentStudent() {
+	return $("#currentStudent").val();
+}
+
+function getCurrentProfessor() {
+	return $("#currentProfessor").val();
+}

@@ -36,10 +36,6 @@ function populateStudentsSelect(data) {
 	}
 }
 
-function getCurrentStudent() {
-	return $("#currentStudent").val();
-}
-
 function populateTranscript(transcript) {
 	$('#transcript').empty();
 	if (transcript.academicRecords && transcript.academicRecords.length > 0) {
@@ -56,22 +52,6 @@ function drawTranscriptTitle(transcript) {
 	paragraph.append("Student: " + transcript.studentUsername);
 	paragraph.append("Grade Point Average: " + transcript.gpa);
 	return paragraph;
-}
-
-function createRow(rowData, isHeader, link) {
-	var row = $('<tr>');
-	var celDef = (isHeader) ? ('<th>'): ('<td>');
-	for (var i = 0; i < rowData.length; i++) {
-		var cel = $(celDef).text(rowData[i]);
-		row.append(cel);
-	}
-	
-	if (link) {
-		var celLink = $(celDef).html(link);
-		row.append(celLink);
-	}
-	
-	return row;
 }
 
 function drawTranscriptTable(academicRecords) {
@@ -94,9 +74,4 @@ function drawTranscriptRow(rowData) {
 	var courseDates = rowData.courseEntry.dates;
 	var values = [rowData.id, course.code, name, course.credits, courseDates.season, formatDate(courseDates.endDate), rowData.grade];
 	return createRow(values, false, null);
-}
-
-function formatDate(date) {
-	var jsDate =  new Date(date);
-	return jsDate.toLocaleDateString();
 }

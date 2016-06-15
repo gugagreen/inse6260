@@ -46,6 +46,10 @@ function ajaxAddCourseForStudent(studentId, courseEntryId) {
 			success: 
 				function(result){
 					ajaxLoadCartForStudent(studentId);
+				},
+			error:
+				function(errorMsg) {
+					showErrorMessage(errorMsg.responseText);
 				}
 		});
 	}
