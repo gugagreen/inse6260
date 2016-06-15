@@ -11,6 +11,7 @@
 	<script src='/scheduler/lib/moment.min.js'></script>
 	<script src='/scheduler/lib/jquery.min.js'></script>
 	<script src='/scheduler/fullcalendar.min.js'></script>
+	<script src="/js/user.js"></script>
 	<script src="/js/scheduler.js"></script>
 	
 	
@@ -26,6 +27,9 @@
 </style>
 </head>
 <body>
+	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
+	<input type="hidden" id="authorities" th:value="${#httpServletRequest.userPrincipal.authorities}"/>
+	<input type="hidden" id="currentStudent"/>
 	<div class="container-fluid">
 	
 			<div class="row">
