@@ -14,6 +14,7 @@ import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
 
 @Component
@@ -47,8 +48,7 @@ public class DefaultCartService implements CartService {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
 				entry.setCourseEntry(courseEntry);
-				// TODO - treat other status
-				entry.setStatus(AcademicRecordStatus.REGISTERED);
+				entry.setStatus(calculateStatus(courseEntry));
 				records.add(entry);
 				studentDao.save(student);
 				
@@ -64,6 +64,17 @@ public class DefaultCartService implements CartService {
 			// FIXME - throw exception
 		}
 	}
+	
+	private AcademicRecordStatus calculateStatus(CourseEntry courseEntry) {
+		// by default, status will be registered
+		AcademicRecordStatus status = AcademicRecordStatus.REGISTERED;
+		// if course is full, goes to wait list
+		if (courseEntry.getSize() <= courseEntry.getStudents().size()) {
+			status = AcademicRecordStatus.WAIT_LIST;
+		}
+		
+		return status;
+	}
 
 	@Override
 	public void deleteCourseForStudent(String username, long courseEntryId) {
@@ -72,17 +83,23 @@ public class DefaultCartService implements CartService {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
 			AcademicRecordEntry existentRecord = hasCourse(records, courseEntryId);
 			if (existentRecord != null) {
-				records.remove(existentRecord);
-				studentDao.save(student);
-				
-				// also remove student from course entry list
-				CourseEntry courseEntry = existentRecord.getCourseEntry();
-				courseEntry.getStudents().remove(student);
-				courseEntryDao.save(courseEntry);
+				if (!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) {
+					records.remove(existentRecord);
+					studentDao.save(student);
+					
+					// also remove student from course entry list
+					CourseEntry courseEntry = existentRecord.getCourseEntry();
+					courseEntry.getStudents().remove(student);
+					courseEntryDao.save(courseEntry);
+				} else {
+					String baseMsg = "Student %s cannot remove course %d from his academic record because it is already finished.";
+					String message = String.format(baseMsg, username, courseEntryId);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
+				}
 			} else {
-				LOGGER.info("Student {} does not have course {} in his academic record to be removed.", username, courseEntryId);
+				LOGGER.debug("Student {} does not have course {} in his academic record to be removed.", username, courseEntryId);
 				// FIXME - throw exception
-				// FIXME - handle when course cannot be removed
 			}
 		} else {
 			LOGGER.debug("No student found with username: {}.", username);

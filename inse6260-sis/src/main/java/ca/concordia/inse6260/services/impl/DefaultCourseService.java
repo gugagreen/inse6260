@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.AcademicRecordEntryDAO;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
+import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
@@ -87,6 +88,9 @@ public class DefaultCourseService implements CourseService {
 					Student student = findStudentInCourse(entry, sGrade);
 					AcademicRecordEntry record = findRecordInStudent(courseEntryId, student);
 					record.setGrade(sGrade.getGrade());
+					if (sGrade.getGrade() != null) {
+						record.setStatus(AcademicRecordStatus.FINISHED);
+					}
 					recordDao.save(record);
 				} else {
 					throw new IllegalArgumentException("StudentGrade cannot be null!");
