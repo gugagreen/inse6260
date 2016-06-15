@@ -3,55 +3,76 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-	<title>Cart</title>
-	<script src="/js/jquery-2.2.4.js"></script>
-	<script src="/js/user.js"></script>
-	<script src="/js/cart.js"></script>
-	<script src="/js/cartAjax.js"></script>
-	<script src="/js/cartCoursesSelect.js"></script>
-	<script src="/js/cartStudentSelect.js"></script>
-	<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
+<title>Cart</title>
+<script src="/js/jquery-2.2.4.js"></script>
+<script src="/js/user.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/cartAjax.js"></script>
+<script src="/js/cartCoursesSelect.js"></script>
+<script src="/js/cartStudentSelect.js"></script>
+<script src="/css/bootstrap.min.js"></script>
+<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
 </head>
 <body>
-	<input type="hidden" id="username" th:value="${#httpServletRequest.remoteUser}"/>
-	<input type="hidden" id="authorities" th:value="${#httpServletRequest.userPrincipal.authorities}"/>
-	<input type="hidden" id="currentStudent"/>
+	<input type="hidden" id="username"
+		th:value="${#httpServletRequest.remoteUser}" />
+	<input type="hidden" id="authorities"
+		th:value="${#httpServletRequest.userPrincipal.authorities}" />
+	<input type="hidden" id="currentStudent" />
 
 	<div class="container-fluid">
-	
+
 		<div class="row">
-		<div class="col-md-6  h1 text-right">
-			<form th:action="@{/logout}" method="post">
-				<input class="btn btn-primary" type="submit" value="Sign Out" />
-			</form>
+			<div class="col-md-6  h1 text-right">
+				<form th:action="@{/logout}" method="post">
+					<input class="btn btn-primary" type="submit" value="Sign Out" />
+				</form>
+			</div>
+			<div class="col-md-6 h1 text-left">
+				<h3>Search Course</h3>
+			</div>
 		</div>
-		<div class="col-md-6 h1 text-left">
-			<h3>Search Course</h3>
-		</div>
-	</div>	
-	
-	<div id="termArea">
-		<select id="term_select">
-			<option selected="selected" disabled="disabled">Choose a term:</option>
-		</select>
-		
-		<div id="allCourses">
-		</div>
-	</div>
-	
-	<div id="cartArea">
-		<div id="studentSelectDiv" style="display: none;">
-			<select id="student_select">
-				<option selected="selected" disabled="disabled">Choose a student:</option>
+
+		<div id="termArea">
+			<select id="term_select">
+				<option selected="selected" disabled="disabled">Choose a
+					term:</option>
 			</select>
+
+			<div id="allCourses"></div>
 		</div>
-		<div id="cart">
+
+		<div id="cartArea">
+			<div id="studentSelectDiv" style="display: none;">
+				<select id="student_select">
+					<option selected="selected" disabled="disabled">Choose a
+						student:</option>
+				</select>
+			</div>
+			<div id="cart"></div>
+		</div>
+
+		<button class="btn btn-default"
+			onclick="location.href='http://localhost:8080'">Home</button>
+
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="errorModal" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Error</h4>
+				</div>
+				<div class="modal-body">
+					<p>Generic error.</p>
+				</div>
+			</div>
 		</div>
 	</div>
-	
-	<button class="btn btn-default" onclick="location.href='http://localhost:8080'">Home</button>
-	
-	</div>
-	
+
 </body>
 </html>
