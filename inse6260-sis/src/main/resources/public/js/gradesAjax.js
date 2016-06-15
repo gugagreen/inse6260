@@ -61,11 +61,12 @@ function ajaxUpdateGradesForCourse(courseEntryId, studentGrades) {
 			data: studentGrades,
 			success: 
 				function(data){
-					alert("grades updated");
+					showSuccessMessage("Grades updated!");
 				},
-			error: function(errorThrown){
-		        alert("error: " + errorThrown);
-			}
+			error: 
+				function(errorMsg) {
+					showErrorMessage(errorMsg.responseText);
+				}
 		});
 	}
 }

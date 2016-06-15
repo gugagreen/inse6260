@@ -1,7 +1,5 @@
 package ca.concordia.inse6260.entities;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,8 +18,9 @@ public class AcademicRecordEntry {
 	private long id;
 	@ManyToOne
 	private CourseEntry courseEntry;
-	@Column(name = "grade")
-	private BigDecimal grade;
+	@Column(name = "grade", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Grade grade;
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AcademicRecordStatus status;
@@ -46,11 +45,11 @@ public class AcademicRecordEntry {
 		this.courseEntry = courseEntry;
 	}
 
-	public BigDecimal getGrade() {
+	public Grade getGrade() {
 		return grade;
 	}
 
-	public void setGrade(BigDecimal grade) {
+	public void setGrade(Grade grade) {
 		this.grade = grade;
 	}
 

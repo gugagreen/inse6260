@@ -15,6 +15,7 @@ import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
+import ca.concordia.inse6260.entities.Grade;
 import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.StudentGrade;
@@ -84,14 +85,17 @@ public class DefaultCourseService implements CourseService {
 		CourseEntry entry = dao.findOne(courseEntryId);
 		if (studentGrades != null && entry != null) {
 			for (StudentGrade sGrade : studentGrades) {
-				if (sGrade != null) {
+				if (sGrade != null && sGrade.getGrade() != null) {
 					Student student = findStudentInCourse(entry, sGrade);
 					AcademicRecordEntry record = findRecordInStudent(courseEntryId, student);
-					record.setGrade(sGrade.getGrade());
-					if (sGrade.getGrade() != null) {
+					// can only set grade to NOT_SET if course is not finished 
+					if (Grade.valueOf(sGrade.getGrade()) != Grade.NOT_SET || record.getStatus() != AcademicRecordStatus.FINISHED) {
+						record.setGrade(Grade.valueOf(sGrade.getGrade()));
 						record.setStatus(AcademicRecordStatus.FINISHED);
+						recordDao.save(record);
+					} else {
+						throw new IllegalArgumentException("You can only set grade to NOT_SET if course is not finished!");
 					}
-					recordDao.save(record);
 				} else {
 					throw new IllegalArgumentException("StudentGrade cannot be null!");
 				}

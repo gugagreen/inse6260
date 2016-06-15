@@ -31,10 +31,13 @@ function drawStudentsHeader() {
 
 function drawStudentsRow(rowData) {
 	var values = [ rowData.username ];
-	var link = $('<input/>').attr({
-		type : 'text',
+	var link = $('<select/>').attr({
 		id : 'grade_' + rowData.username
 	});
+	var data = ['NOT_SET', 'A_PLUS', 'A', 'A_MINUS', 'B_PLUS', 'B', 'B_MINUS', 'C_PLUS', 'C', 'C_MINUS', 'F'];
+	for (var val in data) {
+		$('<option />', {value: data[val], text: data[val]}).appendTo(link);
+	}
 	return createRow(values, false, link);
 }
 
@@ -50,10 +53,12 @@ function loadCurrentGrades(students, courseEntry) {
 				break;
 			}
 		}
-		// if there is a current grade, add to input
+		var gradeSelect = $("#grade_" + student.username);
+		// if there is a current grade, add to select, otherwise its is 'NOT_SET'
 		if (currentGrade) {
-			var gradeInput = $("#grade_" + student.username);
-			gradeInput.val(currentGrade);
+			gradeSelect.val(currentGrade);
+		} else {
+			gradeSelect.val('NOT_SET');
 		}
 	}
 }
@@ -72,7 +77,7 @@ function drawGradesButton(courseEntry) {
 
 function buildStudentGradesJson() {
 	var gradesJson = "[";
-	var allGrades = $( "input[id^='grade_']" );
+	var allGrades = $( "select[id^='grade_']" );
 	for (var i = 0; i < allGrades.length; i++) {
 		currentGrade = allGrades[i];
 		gradesJson += JSON.stringify({"studentUsername":currentGrade.id.replace('grade_',''),"grade":currentGrade.value});

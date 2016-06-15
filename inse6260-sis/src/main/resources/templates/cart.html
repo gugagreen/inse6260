@@ -3,15 +3,16 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Cart</title>
-<script src="/js/jquery-2.2.4.js"></script>
-<script src="/js/user.js"></script>
-<script src="/js/cart.js"></script>
-<script src="/js/cartAjax.js"></script>
-<script src="/js/cartCoursesSelect.js"></script>
-<script src="/js/cartStudentSelect.js"></script>
-<script src="/css/bootstrap.min.js"></script>
-<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
+	<title>Cart</title>
+	<script src="/js/jquery-2.2.4.js"></script>
+	<script src="/js/user.js"></script>
+	<script src="/js/modal.js"></script>
+	<script src="/js/cart.js"></script>
+	<script src="/js/cartAjax.js"></script>
+	<script src="/js/cartCoursesSelect.js"></script>
+	<script src="/js/cartStudentSelect.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
 </head>
 <body>
 	<input type="hidden" id="username"
@@ -57,8 +58,8 @@
 
 	</div>
 
-	<!-- Modal -->
-	<div class="modal fade" id="errorModal" role="dialog">
+	<!-- Error Modal -->
+	<div class="modal fade" id="messageModal" role="dialog">
 		<div class="modal-dialog">
 
 			<!-- Modal content-->

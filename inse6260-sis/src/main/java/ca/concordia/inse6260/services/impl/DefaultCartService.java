@@ -13,6 +13,7 @@ import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
+import ca.concordia.inse6260.entities.Grade;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
@@ -48,6 +49,7 @@ public class DefaultCartService implements CartService {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
 				entry.setCourseEntry(courseEntry);
+				entry.setGrade(Grade.NOT_SET);
 				entry.setStatus(calculateStatus(courseEntry));
 				records.add(entry);
 				studentDao.save(student);
@@ -83,6 +85,7 @@ public class DefaultCartService implements CartService {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
 			AcademicRecordEntry existentRecord = hasCourse(records, courseEntryId);
 			if (existentRecord != null) {
+				// check if course is not finished
 				if (!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) {
 					records.remove(existentRecord);
 					studentDao.save(student);

@@ -1,14 +1,12 @@
 package ca.concordia.inse6260.entities;
 
-import java.math.BigDecimal;
-
 /**
  * DTO to map student to grade.
  */
 public class StudentGrade {
 
 	private String studentUsername;
-	private BigDecimal grade;
+	private String grade;
 	
 	public String getStudentUsername() {
 		return studentUsername;
@@ -16,10 +14,10 @@ public class StudentGrade {
 	public void setStudentUsername(String studentUsername) {
 		this.studentUsername = studentUsername;
 	}
-	public BigDecimal getGrade() {
+	public String getGrade() {
 		return grade;
 	}
-	public void setGrade(BigDecimal grade) {
+	public void setGrade(String grade) {
 		this.grade = grade;
 	}
 	

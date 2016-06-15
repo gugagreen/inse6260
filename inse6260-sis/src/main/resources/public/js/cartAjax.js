@@ -66,8 +66,7 @@ function ajaxDeleteCourseForStudent(studentId, courseEntryId) {
 				},
 			error:
 				function(errorMsg) {
-					$("#errorModal").find(".modal-body").html(errorMsg.responseText);
-					$("#errorModal").modal("show");
+					showErrorMessage(errorMsg.responseText);
 				}
 		});
 	}
