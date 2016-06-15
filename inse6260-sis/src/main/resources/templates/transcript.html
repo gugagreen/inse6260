@@ -3,24 +3,41 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+	<title>Transcript</title>
+	<script src="/js/jquery-2.2.4.js"></script>
+	<script src="/js/user.js"></script>
+	<script src="/js/modal.js"></script>
+	<script src="/js/transcript.js"></script>
+	<script src="/js/transcriptAjax.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
 	<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
-<title>Transcript</title>
 </head>
 <body>
+	<input type="hidden" id="username"
+		th:value="${#httpServletRequest.remoteUser}" />
+	<input type="hidden" id="authorities"
+		th:value="${#httpServletRequest.userPrincipal.authorities}" />
+	<input type="hidden" id="currentStudent" />
+
 	<div class="container-fluid">
-	
-			<div class="row">
+		<div class="row">
 			<div class="col-md-6  h1 text-right">
 				<form th:action="@{/logout}" method="post">
 					<input class="btn btn-primary" type="submit" value="Sign Out" />
 				</form>
 			</div>
-			<div class="col-md-6 h1 text-left">
-				<h1 th:inline="text">Transcript [[${#httpServletRequest.remoteUser}]]!</h1>
-			</div>
 		</div>
-	
-		<button class="btn btn-default" onclick="location.href='http://localhost:8080'">Home</button>
+
+		<div id="studentSelectDiv" style="display: none;">
+			<select id="student_select">
+				<option selected="selected" disabled="disabled">Choose a student:</option>
+			</select>
+		</div>
+		
+		<div id="transcript"></div>
+
+		<button class="btn btn-default"
+			onclick="location.href='http://localhost:8080'">Home</button>
 	</div>
 </body>
 </html>
