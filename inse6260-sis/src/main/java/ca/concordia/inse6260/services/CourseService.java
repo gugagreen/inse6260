@@ -2,12 +2,11 @@ package ca.concordia.inse6260.services;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestBody;
-
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.StudentGrade;
+import ca.concordia.inse6260.entities.Transcript;
 
 public interface CourseService {
 
@@ -49,4 +48,11 @@ public interface CourseService {
 	 * @param studentGrades	Array of students with their grades.
 	 */
 	void updateGradesForCourse(final long courseEntryId, final StudentGrade[] studentGrades);
+	
+	/**
+	 * Get transcript for a given student.
+	 * @param studentId
+	 * @return The transcript.
+	 */
+	Transcript getStudentTranscript(final String studentId);
 }

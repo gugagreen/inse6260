@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import ca.concordia.inse6260.dao.AcademicRecordEntryDAO;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
+import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
@@ -19,6 +20,7 @@ import ca.concordia.inse6260.entities.Grade;
 import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.StudentGrade;
+import ca.concordia.inse6260.entities.Transcript;
 import ca.concordia.inse6260.entities.User;
 import ca.concordia.inse6260.services.CourseService;
 
@@ -30,6 +32,8 @@ public class DefaultCourseService implements CourseService {
 	private CourseEntryDAO dao;
 	@Resource
 	private AcademicRecordEntryDAO recordDao;
+	@Resource
+	private StudentDAO studentDao;
 
 	public Iterable<CourseEntry> findAll() {
 		return dao.findAll();
@@ -106,6 +110,29 @@ public class DefaultCourseService implements CourseService {
 		}
 	}
 
+	@Override
+	public Transcript getStudentTranscript(String studentId) {
+		Transcript transcript = null;
+		if (studentId == null || studentId.trim().isEmpty()) {
+			throw new IllegalArgumentException("Invalid studentId: " + studentId);
+		}
+		Student student = studentDao.findOne(studentId);
+		if (student != null) {
+			transcript = new Transcript();
+			transcript.setStudentUsername(studentId);
+			List<AcademicRecordEntry> entries = getTranscriptRecords(student);
+			transcript.setAcademicRecords(entries);
+			Grade gpa = calculateGradePointAverage(entries);
+			transcript.setGpa(gpa);
+		} else {
+			String baseMsg = "No student found with username: %s.";
+			String message = String.format(baseMsg, studentId);
+			LOGGER.debug(message);
+			throw new IllegalArgumentException(message);
+		}
+		return transcript;
+	}
+
 	private void validateYearSeason(final String yearSeason) {
 		if ((yearSeason != null) && (yearSeason.length() > 4)) {
 			// throws IllegalArgumentException if enum does not exist
@@ -144,6 +171,37 @@ public class DefaultCourseService implements CourseService {
 		}
 		return found;
 	}
+	
+	private List<AcademicRecordEntry> getTranscriptRecords(final Student student) {
+		List<AcademicRecordEntry> entries = new ArrayList<>();
+		
+		for (AcademicRecordEntry entry : student.getAcademicRecords()) {
+			if (entry.getStatus().equals(AcademicRecordStatus.FINISHED)) {
+				entries.add(entry);
+			}
+		}
+		
+		return entries;
+	}
+	
+	private Grade calculateGradePointAverage(List<AcademicRecordEntry> entries) {
+		float total = 0;
+		for (AcademicRecordEntry entry : entries) {
+			total += entry.getGrade().getMaxPoint();
+		}
+		
+		int gpaPercentPoint = Math.round(total / entries.size());
+		Grade gpaGrade = Grade.NOT_SET;
+		
+		for (Grade grade : Grade.values()) {
+			if (grade.getMaxPoint() >= gpaPercentPoint && grade.getMinPoint() <= gpaPercentPoint) {
+				gpaGrade = grade;
+				break;
+			}
+		}
+		
+		return gpaGrade;
+	}
 
 	public CourseEntryDAO getDao() {
 		return dao;
@@ -159,6 +217,14 @@ public class DefaultCourseService implements CourseService {
 
 	public void setRecordDao(AcademicRecordEntryDAO recordDao) {
 		this.recordDao = recordDao;
+	}
+	
+	public StudentDAO getStudentDao() {
+		return studentDao;
+	}
+
+	public void setStudentDao(StudentDAO studentDao) {
+		this.studentDao = studentDao;
 	}
 
 }
