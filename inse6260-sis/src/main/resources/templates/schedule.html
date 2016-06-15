@@ -4,7 +4,26 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 	<link href="/css/bootstrap.min.css" rel="stylesheet"></link>
+
+	<meta charset='utf-8' />
+	<link href='/scheduler/fullcalendar.css' rel='stylesheet' ></link>
+	<link href='/scheduler/fullcalendar.print.css' rel='stylesheet' media='print' ></link>
+	<script src='/scheduler/lib/moment.min.js'></script>
+	<script src='/scheduler/lib/jquery.min.js'></script>
+	<script src='/scheduler/fullcalendar.min.js'></script>
+	<script src="/js/scheduler.js"></script>
+	
+	
+	
+	
 <title>Schedule</title>
+<style>
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
 </head>
 <body>
 	<div class="container-fluid">
@@ -16,9 +35,19 @@
 				</form>
 			</div>
 			<div class="col-md-6 h1 text-left">
-				<h1 th:inline="text">Schedule [[${#httpServletRequest.remoteUser}]]!</h1>
+				<h1 th:inline="text">[[${#httpServletRequest.remoteUser}]] schedule </h1>
 			</div>
 		</div>
+
+
+	<div id='calendar'></div>
+
+
+
+
+
+
+
 
 	<button class="btn btn-default" onclick="location.href='http://localhost:8080'">Home</button>
 	</div>
