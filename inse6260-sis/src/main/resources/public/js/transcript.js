@@ -50,7 +50,8 @@ function populateTranscript(transcript) {
 function drawTranscriptTitle(transcript) {
 	var paragraph = $('<p>');
 	paragraph.append("Student: " + transcript.studentUsername);
-	paragraph.append("Grade Point Average: " + transcript.gpa);
+	paragraph.append('<p>');
+	paragraph.append(" Cumulative Grade Point Average: " + transcript.gpa);
 	return paragraph;
 }
 

@@ -1,5 +1,6 @@
 package ca.concordia.inse6260.services.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -122,7 +123,7 @@ public class DefaultCourseService implements CourseService {
 			transcript.setStudentUsername(studentId);
 			List<AcademicRecordEntry> entries = getTranscriptRecords(student);
 			transcript.setAcademicRecords(entries);
-			Grade gpa = calculateGradePointAverage(entries);
+			String gpa = calculateGradePointAverage(entries);
 			transcript.setGpa(gpa);
 		} else {
 			String baseMsg = "No student found with username: %s.";
@@ -184,23 +185,18 @@ public class DefaultCourseService implements CourseService {
 		return entries;
 	}
 	
-	private Grade calculateGradePointAverage(List<AcademicRecordEntry> entries) {
+	private String calculateGradePointAverage(List<AcademicRecordEntry> entries) {
 		float total = 0;
 		for (AcademicRecordEntry entry : entries) {
-			total += entry.getGrade().getMaxPoint();
+			total += entry.getGrade().getGPAPoint();
 		}
 		
-		int gpaPercentPoint = Math.round(total / entries.size());
-		Grade gpaGrade = Grade.NOT_SET;
+		float cumGPA = total / entries.size();
+		String pattern = "#.###";
+		DecimalFormat myFormatter = new DecimalFormat(pattern);
+		String output = myFormatter.format(cumGPA);
 		
-		for (Grade grade : Grade.values()) {
-			if (grade.getMaxPoint() >= gpaPercentPoint && grade.getMinPoint() <= gpaPercentPoint) {
-				gpaGrade = grade;
-				break;
-			}
-		}
-		
-		return gpaGrade;
+		return output;
 	}
 
 	public CourseEntryDAO getDao() {

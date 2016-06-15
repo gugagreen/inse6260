@@ -9,7 +9,7 @@ public class Transcript {
 
 	private String studentUsername;
 	private List<AcademicRecordEntry> academicRecords;
-	private Grade gpa;
+	private String gpa;
 	
 	public String getStudentUsername() {
 		return studentUsername;
@@ -23,10 +23,10 @@ public class Transcript {
 	public void setAcademicRecords(List<AcademicRecordEntry> academicRecords) {
 		this.academicRecords = academicRecords;
 	}
-	public Grade getGpa() {
+	public String getGpa() {
 		return gpa;
 	}
-	public void setGpa(Grade gpa) {
+	public void setGpa(String gpa) {
 		this.gpa = gpa;
 	}
 	
