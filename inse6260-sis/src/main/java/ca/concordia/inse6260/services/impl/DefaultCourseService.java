@@ -187,11 +187,14 @@ public class DefaultCourseService implements CourseService {
 	
 	private String calculateGradePointAverage(List<AcademicRecordEntry> entries) {
 		float total = 0;
+		int totalCredits = 0;
 		for (AcademicRecordEntry entry : entries) {
-			total += entry.getGrade().getGPAPoint();
+			int courseCredits = entry.getCourseEntry().getCourse().getCredits();
+			totalCredits += courseCredits;
+			total += entry.getGrade().getGPAPoint()*courseCredits;
 		}
 		
-		float cumGPA = total / entries.size();
+		float cumGPA = total / totalCredits;
 		String pattern = "#.###";
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
 		String output = myFormatter.format(cumGPA);
