@@ -8,62 +8,32 @@ $(document).ready(function() {
 		},
 		editable: true,
 		eventLimit: true, // allow "more" link when too many events
-		events: [
-			{
-				title: 'All Day Event',
-				start: '2016-05-01'
-			},
-			{
-				title: 'Long Event',
-				start: '2016-05-07',
-				end: '2016-05-10'
-			},
-			{
-				id: 999,
-				title: 'Repeating Event',
-				start: '2016-05-09T16:00:00'
-			},
-			{
-				id: 999,
-				title: 'Repeating Event',
-				start: '2016-05-16T16:00:00'
-			},
-			{
-				title: 'Conference',
-				start: '2016-05-11',
-				end: '2016-05-13'
-			},
-			{
-				title: 'Meeting',
-				start: '2016-05-12T10:30:00',
-				end: '2016-05-12T12:30:00'
-			},
-			{
-				title: 'Lunch',
-				start: '2016-05-12T12:00:00'
-			},
-			{
-				title: 'Meeting',
-				start: '2016-05-12T14:30:00'
-			},
-			{
-				title: 'Happy Hour',
-				start: '2016-05-12T17:30:00'
-			},
-			{
-				title: 'Dinner',
-				start: '2016-05-12T20:00:00'
-			},
-			{
-				title: 'Birthday Party',
-				start: '2016-05-13T07:00:00'
-			},
-			{
-				title: 'Click for Google',
-				url: 'http://google.com/',
-				start: '2016-05-28'
-			}
-		]
+
+		
+		
+
+		events: [//Put the event function here and remove the example below:
+			{ title:1, //This is the title of the event
+				start:"10:00", //This is the start time
+				end:"12:00",  //This is the end time
+				dow:[0,4], //This is the day of the week 0 being Sunday, 6 Being Saturday
+				ranges:[{start:"2016/03/01", end:"2016/07/01"},] //This is the start and end dates for the repeating event.
+			//remove the example above
+}
+		],
+		
+		
+		
+		eventRender: function(event){
+		    return (event.ranges.filter(function(range){ // test event against all the ranges
+
+		        return (event.start.isBefore(range.end) &&
+		                event.end.isAfter(range.start));
+
+		    }).length)>0; //if it isn't in one of the ranges, don't render it (by returning false)
+		},
+		
+		
 	});
 	
 });
