@@ -1,16 +1,19 @@
 package ca.concordia.inse6260.acceptance;
 
+import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.*;
 
+public class DisplayScheduleTest extends AbstractSisAcceptanceTest {
 
-public class LoginFailureTest extends AbstractSisAcceptanceTest{
-	
 	private StringBuffer verificationErrors = new StringBuffer();
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -18,16 +21,17 @@ public class LoginFailureTest extends AbstractSisAcceptanceTest{
 	}
 
 	@Test
-  public void testLoginFailure() throws Exception {
-		
+  public void testDisplaySchedule() throws Exception {
 		// go to home page
 		gotoHomePage();
+				
 		// login then logout
-		login("admin", "failtest");
-		Assert.assertEquals("Login Page", driver.getTitle());
-}
-
- 
+		login("student1", "1234");
+		// should redirect to home page
+		Assert.assertEquals("SIS", driver.getTitle());
+		driver.findElement(By.linkText("Schedule")).click();
+		assertEquals("Schedule", driver.getTitle());
+  }
 
   @After
   public void tearDown() throws Exception {

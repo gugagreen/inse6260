@@ -13,7 +13,6 @@ import org.openqa.selenium.support.ui.Select;
 
 public class ViewCartAdminTest extends AbstractSisAcceptanceTest {
 
-	private boolean acceptNextAlert = true;
 	private StringBuffer verificationErrors = new StringBuffer();
 	
 	@Before

@@ -12,7 +12,6 @@ import org.openqa.selenium.support.ui.Select;
 
 public class SearchTermForCourseTest extends AbstractSisAcceptanceTest {
 
-	private boolean acceptNextAlert = true;
 	private StringBuffer verificationErrors = new StringBuffer();
 	
 	@Before
