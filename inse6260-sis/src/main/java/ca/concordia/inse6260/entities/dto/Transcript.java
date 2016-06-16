@@ -12,6 +12,7 @@ public class Transcript {
 	private String studentUsername;
 	private List<AcademicRecordEntry> academicRecords;
 	private String gpa;
+	private List<String> termGPA;
 	
 	public String getStudentUsername() {
 		return studentUsername;
@@ -30,6 +31,12 @@ public class Transcript {
 	}
 	public void setGpa(String gpa) {
 		this.gpa = gpa;
+	}
+	public List<String> getTermGPA() {
+		return termGPA;
+	}
+	public void setTermGPA(List<String> termGPA) {
+		this.termGPA = termGPA;
 	}
 	
 	

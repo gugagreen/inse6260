@@ -125,6 +125,8 @@ public class DefaultCourseService implements CourseService {
 			transcript.setAcademicRecords(entries);
 			String gpa = calculateGradePointAverage(entries);
 			transcript.setGpa(gpa);
+			List<String> termGPA = calculateTermGPA(entries);
+			transcript.setTermGPA(termGPA);
 		} else {
 			String baseMsg = "No student found with username: %s.";
 			String message = String.format(baseMsg, studentId);
@@ -201,6 +203,52 @@ public class DefaultCourseService implements CourseService {
 		
 		return output;
 	}
+	
+	private List<String> calculateTermGPA(List<AcademicRecordEntry> entries) {
+		List<String> output = new ArrayList<String>();
+		List<String> seasonYear = new ArrayList<String>();
+		List<Integer> seasonCredits = new ArrayList<Integer>();
+		List<Float> seasonGPA = new ArrayList<Float>();
+		
+		for(AcademicRecordEntry entry :entries){
+			int currentCredits = 0;
+			float currentGPA = 0;
+			String courseSeasonYear = entry.getCourseEntry().getDates().getSeason().toString() + "/" + entry.getCourseEntry().getDates().getStartDate().get(Calendar.YEAR) ;
+			
+			if(seasonYear.contains(courseSeasonYear)){
+				int index = seasonYear.indexOf(courseSeasonYear);
+					currentCredits = seasonCredits.get(index);
+					int courseCredits = entry.getCourseEntry().getCourse().getCredits();
+					currentCredits += courseCredits;
+					seasonCredits.set(index, currentCredits);
+					
+					currentGPA = seasonGPA.get(index);
+					currentGPA += entry.getGrade().getGPAPoint()*courseCredits;
+					seasonGPA.set(index, currentGPA);
+				}
+			else{
+				seasonYear.add(courseSeasonYear);
+				int courseCredits = entry.getCourseEntry().getCourse().getCredits();
+				seasonCredits.add(courseCredits);
+				seasonGPA.add(entry.getGrade().getGPAPoint()*courseCredits);
+				
+			}
+		}
+		for(String temp: seasonYear){
+			int tempIndex = seasonYear.indexOf(temp);
+			float GPA = seasonGPA.get(tempIndex)/seasonCredits.get(tempIndex);
+				String pattern = "#.###";
+				DecimalFormat myFormatter = new DecimalFormat(pattern);
+				String stringGpa = myFormatter.format(GPA);
+			
+			output.add(temp +"	GPA:"+ stringGpa);
+		}
+		
+		return output;	
+	}
+		
+
+	
 
 	public CourseEntryDAO getDao() {
 		return dao;

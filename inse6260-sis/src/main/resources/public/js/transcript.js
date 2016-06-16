@@ -41,10 +41,13 @@ function populateTranscript(transcript) {
 	if (transcript.academicRecords && transcript.academicRecords.length > 0) {
 		$('#transcript').append(drawTranscriptTitle(transcript));
 		var table = drawTranscriptTable(transcript.academicRecords);
+		var table2 = drawTermGPATable(transcript);
 	} else {
 		$('#transcript').append($('<p>').append("No finished courses for student"));
 	}
 	$('#transcript').append(table);
+	$('#transcript').append($('<p>'));
+	$('#transcript').append(table2);
 }
 
 function drawTranscriptTitle(transcript) {
@@ -56,17 +59,34 @@ function drawTranscriptTitle(transcript) {
 }
 
 function drawTranscriptTable(academicRecords) {
-	var table = $('<table>');
-	table.append(drawTranscriptHeader());	
+	var table = $('<table>');	
+	table.append(drawTranscriptHeader());
 
 	for (var i = 0; i < academicRecords.length; i++) {
 		table.append(drawTranscriptRow(academicRecords[i]));
     }
+	
 	return table;
+}
+
+function drawTermGPATable(transcript){
+	var GPAtable = $('<table>');
+	GPAtable.append(drawTranscriptGPAHeader());
+	
+	for (var i = 0; i < transcript.termGPA.length; i++){
+		var termGpa = [transcript.termGPA[i]];
+		GPAtable.append(createRow(termGpa,false,null));
+	}
+	return GPAtable;
 }
 
 function drawTranscriptHeader() {
 	var headers = ['Id', 'Code', 'Name', 'Credits', 'Season', 'End Date', 'Grade'];
+	return createRow(headers, true, null);
+}
+
+function drawTranscriptGPAHeader(){
+	var headers = ['Season', 'GPA'];
 	return createRow(headers, true, null);
 }
 
