@@ -79,7 +79,7 @@ public class DefaultCourseServiceTest {
 
 		Transcript transcript = service.getStudentTranscript(studentId);
 		Assert.assertNotNull(transcript);
-		Assert.assertEquals(Grade.B, transcript.getGpa());
+		Assert.assertEquals("3.34", transcript.getGpa());
 	}
 	
 	@Test

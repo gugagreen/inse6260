@@ -7,7 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-public class HomePageTest extends AbstractSisAcceptanceTest {
+public class AddRemoveCartTest extends AbstractSisAcceptanceTest {
 
 	@Before
 	public void setup() {
@@ -15,7 +15,7 @@ public class HomePageTest extends AbstractSisAcceptanceTest {
 	}
 	
 	@Test
-	public void adminShouldBeAbleToAddRemoveFromCart() {
+	public void adminShouldBeAbleToAddRemoveFromCart() throws InterruptedException {
 		// go to home page
 		gotoHomePage();
 		// should redirect to login page
@@ -54,9 +54,12 @@ public class HomePageTest extends AbstractSisAcceptanceTest {
 		cartEntry = findCartEntry(courseName);
 		Assert.assertNotNull(cartEntry);
 		
+		Thread.sleep(1000);
+		
 		// remove course from student cart
 		WebElement deleteButton = findDeleteButton(courseName);
 		deleteButton.click();
+		Thread.sleep(1000);
 		// check if course was removed
 		cartEntry = findCartEntry(courseName);
 		Assert.assertNull(cartEntry);
