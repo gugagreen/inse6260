@@ -18,9 +18,9 @@ public class PaymentController {
 	@Resource
 	private PaymentService service;
 	
-	@RequestMapping(value="/payment/student/{username}/value/{value}", method=RequestMethod.POST)
-	public void addPayment(@PathVariable("username") final String username, @PathVariable("username") final BigDecimal value) {
-		service.addPayment(username, value);
+	@RequestMapping(value="/payment/student/{username}/value/{value:.+}", method=RequestMethod.POST)
+	public void addPayment(@PathVariable("username") final String username, @PathVariable("value") final String value) {
+		service.addPayment(username, new BigDecimal(value));
 	}
 	
 	@RequestMapping(value="/payment/student/{username}", method=RequestMethod.GET)

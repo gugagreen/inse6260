@@ -105,3 +105,18 @@ function drawPaymentsRow(rowData) {
 	return createRow(values, false, null);
 }
 
+function addPayment() {
+	var value = $('#paymentValue').val();
+	if (Number(value) < 0.01 || Number(value) > 5000) {
+		showErrorMessage("Value should be betwee [0.01, 5000.00]");
+		$('#paymentValue').val('');
+	} else {
+		var studentId = getCurrentStudent();
+		if (studentId) {
+			ajaxAddCourseForStudent(studentId, value);
+		} else {
+			showErrorMessage("No student selected");
+		}
+	}
+}
+

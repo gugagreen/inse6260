@@ -40,9 +40,32 @@
 		</div>
 		
 		<div id="balance"></div>
+		
+		<div style="width: 600px; display: table-cell;" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+			<h2>Add payment</h2>
+  			<input id="paymentValue" type="number" min="0.01" step="0.01" max="5000" />
+  			<button class="btn btn-default" onclick="addPayment()">Submit</button>
+ 		</div>
 
 		<button class="btn btn-default"
 			onclick="location.href='http://localhost:8080'">Home</button>
+	</div>
+
+	<!-- Error Modal -->
+	<div class="modal fade" id="messageModal" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Error</h4>
+				</div>
+				<div class="modal-body">
+					<p>Generic error.</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
