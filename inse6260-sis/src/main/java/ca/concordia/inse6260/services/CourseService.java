@@ -3,10 +3,10 @@ package ca.concordia.inse6260.services;
 import java.util.List;
 
 import ca.concordia.inse6260.entities.CourseEntry;
-import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.StudentGrade;
-import ca.concordia.inse6260.entities.Transcript;
+import ca.concordia.inse6260.entities.dto.Transcript;
+import ca.concordia.inse6260.entities.enums.Season;
 
 public interface CourseService {
 

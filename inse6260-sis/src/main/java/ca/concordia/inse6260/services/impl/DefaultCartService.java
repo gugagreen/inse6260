@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
-import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
-import ca.concordia.inse6260.entities.Grade;
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
+import ca.concordia.inse6260.entities.enums.Grade;
 import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
 

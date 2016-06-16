@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
+import ca.concordia.inse6260.entities.enums.Grade;
+
 @Entity
 public class AcademicRecordEntry {
 

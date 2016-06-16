@@ -17,6 +17,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import ca.concordia.inse6260.entities.enums.Role;
+
 @Entity
 @Table(name = "user")
 @Inheritance(strategy=InheritanceType.JOINED)

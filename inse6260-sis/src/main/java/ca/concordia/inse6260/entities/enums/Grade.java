@@ -1,4 +1,4 @@
-package ca.concordia.inse6260.entities;
+package ca.concordia.inse6260.entities.enums;
 
 public enum Grade {
 

@@ -14,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import ca.concordia.inse6260.entities.enums.Season;
+
 @Entity
 @NamedQuery(name="CourseDates.findSeasons", query="SELECT DISTINCT CONCAT(cd.season,substring(cd.startDate,1,4)) FROM CourseDates cd")
 public class CourseDates {

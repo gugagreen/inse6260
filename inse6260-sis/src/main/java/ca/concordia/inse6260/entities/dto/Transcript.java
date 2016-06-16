@@ -1,6 +1,8 @@
-package ca.concordia.inse6260.entities;
+package ca.concordia.inse6260.entities.dto;
 
 import java.util.List;
+
+import ca.concordia.inse6260.entities.AcademicRecordEntry;
 
 /**
  * DTO for transcript.

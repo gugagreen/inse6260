@@ -20,7 +20,7 @@ function loadCurrentStudent() {
 }
 
 /**
- * Whenever #student_select changes, populates #currentStudent with student username and loads student cart 
+ * Whenever #student_select changes, populates #currentStudent with student username and loads student transcript 
  */
 function handleModifyStudent() {
 	$("#student_select").change(function() {

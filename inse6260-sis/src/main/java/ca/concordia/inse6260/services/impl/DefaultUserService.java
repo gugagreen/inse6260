@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.dao.UserDAO;
-import ca.concordia.inse6260.entities.Role;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.User;
+import ca.concordia.inse6260.entities.enums.Role;
 import ca.concordia.inse6260.services.UserService;
 
 @Component

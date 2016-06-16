@@ -15,14 +15,14 @@ import ca.concordia.inse6260.dao.AcademicRecordEntryDAO;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
-import ca.concordia.inse6260.entities.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.CourseEntry;
-import ca.concordia.inse6260.entities.Grade;
-import ca.concordia.inse6260.entities.Season;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.StudentGrade;
-import ca.concordia.inse6260.entities.Transcript;
 import ca.concordia.inse6260.entities.User;
+import ca.concordia.inse6260.entities.dto.Transcript;
+import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
+import ca.concordia.inse6260.entities.enums.Grade;
+import ca.concordia.inse6260.entities.enums.Season;
 import ca.concordia.inse6260.services.CourseService;
 
 @Component

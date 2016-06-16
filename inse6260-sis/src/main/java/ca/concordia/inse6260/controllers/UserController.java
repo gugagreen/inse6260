@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.concordia.inse6260.entities.Student;
-import ca.concordia.inse6260.entities.Transcript;
 import ca.concordia.inse6260.entities.User;
+import ca.concordia.inse6260.entities.dto.Transcript;
 import ca.concordia.inse6260.services.CourseService;
 import ca.concordia.inse6260.services.UserService;
 
