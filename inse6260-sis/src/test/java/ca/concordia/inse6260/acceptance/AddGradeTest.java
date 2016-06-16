@@ -1,6 +1,5 @@
 package ca.concordia.inse6260.acceptance;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -14,7 +13,6 @@ import org.openqa.selenium.support.ui.Select;
 public class AddGradeTest extends AbstractSisAcceptanceTest {
 
 	private StringBuffer verificationErrors = new StringBuffer();
-	  private boolean acceptNextAlert = true;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,30 +51,6 @@ public class AddGradeTest extends AbstractSisAcceptanceTest {
 	      return true;
 	    } catch (NoSuchElementException e) {
 	      return false;
-	    }
-	  }
-
-	  private boolean isAlertPresent() {
-	    try {
-	      driver.switchTo().alert();
-	      return true;
-	    } catch (NoAlertPresentException e) {
-	      return false;
-	    }
-	  }
-
-	  private String closeAlertAndGetItsText() {
-	    try {
-	      Alert alert = driver.switchTo().alert();
-	      String alertText = alert.getText();
-	      if (acceptNextAlert) {
-	        alert.accept();
-	      } else {
-	        alert.dismiss();
-	      }
-	      return alertText;
-	    } finally {
-	      acceptNextAlert = true;
 	    }
 	  }
 	}
