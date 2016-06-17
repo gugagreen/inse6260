@@ -31,7 +31,6 @@ public class User {
     @Column(name = "username", nullable = false, updatable = false)
     private String username;
 
-	// FIXME - use password hash instead of plain text
     @Column(name = "password", nullable = false)
     private String password;
     
