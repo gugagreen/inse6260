@@ -3,11 +3,14 @@ package ca.concordia.inse6260.config;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
 
 		auth.jdbcAuthentication().dataSource(datasource)
+				.passwordEncoder(passwordEncoder())
 				.usersByUsernameQuery("select username,password,enabled from user where username=?")
 				.authoritiesByUsernameQuery("select user_username,user_role_id from user_role where user_username=?");
 
@@ -55,6 +59,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//
 		// userDetailsService.createUser(userDetails);
 		// }
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder(){
+		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		return encoder;
 	}
 
 }
