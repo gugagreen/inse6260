@@ -30,8 +30,8 @@ public class AddGradeTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("SIS", driver.getTitle());
 		driver.findElement(By.linkText("Grades")).click();
 	    new Select(driver.findElement(By.id("term_select"))).selectByVisibleText("SUMMER2016");
-	    driver.findElement(By.id("btn_open_1")).click();
-	    driver.findElement(By.id("btn_update_grades_1")).click();
+	    driver.findElement(By.id("btn_open_2")).click();
+	    driver.findElement(By.id("btn_update_grades_2")).click();
 	    //assert that the success header popped up after inserting grade
 	    assertTrue(isElementPresent(By.cssSelector("div.modal-header")));
 	  }

@@ -55,7 +55,7 @@ public class DefaultCourseServiceTest {
 	public void shouldFindSeason() {
 		String yearSeason = "SUMMER2016";
 		List<CourseEntry> mockedCourses = new ArrayList<>();
-		Mockito.when(dao.findBySeason(Mockito.any(Season.class), Mockito.any(Calendar.class))).thenReturn(mockedCourses);
+		Mockito.when(dao.findAll()).thenReturn(mockedCourses);
 
 		List<CourseEntry> courses = service.findBySeason(yearSeason);
 		Assert.assertNotNull(courses);
@@ -65,7 +65,7 @@ public class DefaultCourseServiceTest {
 	public void shouldNotWorkWithInvalidSeason() {
 		String yearSeason = "NOTASEASON2016";
 		List<CourseEntry> mockedCourses = new ArrayList<>();
-		Mockito.when(dao.findBySeason(Mockito.any(Season.class), Mockito.any(Calendar.class))).thenReturn(mockedCourses);
+		Mockito.when(dao.findAll()).thenReturn(mockedCourses);
 
 		service.findBySeason(yearSeason);
 	}
@@ -74,7 +74,7 @@ public class DefaultCourseServiceTest {
 	public void shouldNotWorkWithInvalidYear() {
 		String yearSeason = "SUMMER----";
 		List<CourseEntry> mockedCourses = new ArrayList<>();
-		Mockito.when(dao.findBySeason(Mockito.any(Season.class), Mockito.any(Calendar.class))).thenReturn(mockedCourses);
+		Mockito.when(dao.findAll()).thenReturn(mockedCourses);
 
 		service.findBySeason(yearSeason);
 	}

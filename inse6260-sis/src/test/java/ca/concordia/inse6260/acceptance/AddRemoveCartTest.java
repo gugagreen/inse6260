@@ -28,7 +28,7 @@ public class AddRemoveCartTest extends AbstractSisAcceptanceTest {
 		goToCart();
 		Assert.assertEquals("Cart", driver.getTitle());
 		
-		final String courseName = "SOEN691";
+		final String courseName = "COMP6961";
 		// before select term, course should not be there
 		WebElement courseLine = findCourse(courseName);
 		Assert.assertNull(courseLine);
