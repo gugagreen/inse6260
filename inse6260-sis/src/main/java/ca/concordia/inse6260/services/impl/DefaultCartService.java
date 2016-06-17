@@ -1,5 +1,7 @@
 package ca.concordia.inse6260.services.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,10 +13,12 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
+import ca.concordia.inse6260.entities.CourseDates;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.enums.Grade;
+import ca.concordia.inse6260.entities.enums.Season;
 import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
 
@@ -44,7 +48,7 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			if (hasCourse(records, courseEntryId) == null) {
+			if (hasCourse(records, courseEntryId) == null && !hasTimeConflict(records, courseEntryId)) {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
 				entry.setCourseEntry(courseEntry);
@@ -56,7 +60,12 @@ public class DefaultCartService implements CartService {
 				// also add student to course entry list 
 				courseEntry.getStudents().add(student);
 				courseEntryDao.save(courseEntry);
-			} else {
+			} else if(hasTimeConflict(records,courseEntryId)){
+				String baseMsg = "Class has time conflict with course %d in Student %s academic record.";
+				String message = String.format(baseMsg, courseEntryId, username);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
+			}else {
 				String baseMsg = "Student %s already has course %d in his academic record.";
 				String message = String.format(baseMsg, username, courseEntryId);
 				LOGGER.debug(message);
@@ -120,6 +129,67 @@ public class DefaultCartService implements CartService {
 			}
 		}
 		return existentRecord;
+	}
+	
+	private boolean hasTimeConflict(final List<AcademicRecordEntry> records, final long courseEntryId){
+		boolean hasConflict = false;
+		CourseDates courseDates = courseEntryDao.findOne(courseEntryId).getDates();
+		Season entrySeason = courseDates.getSeason();
+		int entryYear = courseDates.getStartDate().get(Calendar.YEAR);
+		String weekDays = courseDates.getWeekDays();
+		
+		Date entryStartTime = courseDates.getStartTime();
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(entryStartTime);
+		
+		for(AcademicRecordEntry record : records){
+			CourseDates registeredCourseDates = courseEntryDao.findOne(record.getCourseEntry().getId()).getDates();
+			Season recordSeason = registeredCourseDates.getSeason();
+			int recordYear = registeredCourseDates.getStartDate().get(Calendar.YEAR);
+			String recordDays = registeredCourseDates.getWeekDays();
+			
+			boolean dayMatch = matchingWeekdays(weekDays, recordDays);
+			
+			Date recordStartTime = registeredCourseDates.getStartTime();
+			Calendar cal2 = Calendar.getInstance();
+			cal2.setTime(recordStartTime);
+			cal2.add(Calendar.DATE, 1);
+			
+			Date recordEndTime = registeredCourseDates.getEndTime();
+			Calendar cal3 = Calendar.getInstance();
+			cal3.setTime(recordEndTime);
+			cal3.add(Calendar.DATE, 1);
+			
+			Date x = entryStartTime;
+			boolean before = x.after(recordStartTime);
+			boolean equals = x.equals(recordStartTime);
+			boolean after = x.before(recordEndTime);
+			
+			
+			if(courseDates.equals(registeredCourseDates)){
+				hasConflict = true;
+			}
+			else if((entryYear==recordYear) && entrySeason.equals(recordSeason) && dayMatch && ((before || equals) && after)){
+				hasConflict = true;
+			}
+			else{
+				hasConflict = false;
+			}
+		}
+		return hasConflict;
+	}
+	
+	private boolean matchingWeekdays(String weekDays, String otherDays){
+		boolean matching = false;
+		String noDays = "-";
+		char noDay = noDays.charAt(0);
+		
+		for(int i = 0 ; i < weekDays.length() ; i++){
+			if((weekDays.charAt(i) != (noDay)) && (otherDays.charAt(i) != (noDay))){
+				matching = true;
+			}
+		}
+		return matching;
 	}
 	
 	private void noStudentFound(final String username) {

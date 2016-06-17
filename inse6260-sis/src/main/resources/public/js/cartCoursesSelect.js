@@ -26,13 +26,13 @@ function drawCoursesTable(data) {
 }
 
 function drawCoursesHeader() {
-	var headers = ['Id', 'Size', 'Code', 'Name', 'Credits', 'Professor'];
+	var headers = ['Id','Enrolled', 'Size', 'Code', 'Name', 'Credits', 'Professor', 'Days', 'Start Time - End Time', 'Start Date - End Date'];
 	var link = "";
 	return createRow(headers, true, link);
 }
 
 function drawCoursesRow(rowData) {
-	var values = [rowData.id, rowData.size, rowData.course.code, rowData.course.name, rowData.course.credits, rowData.professor.username];
+	var values = [rowData.id,'FIXME', rowData.size, rowData.course.code, rowData.course.name, rowData.course.credits, rowData.professor.username, rowData.dates.weekDays, rowData.dates.startTime +'-'+ rowData.dates.endTime, formatDate(rowData.dates.startDate)+" - "+formatDate(rowData.dates.endDate)];
 	var link = $('<button>', {
 					text: 'Add',
 					id: 'btn_add_' + rowData.id,
