@@ -24,7 +24,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		gotoHomePage();
 		
 		// login then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		// should redirect to home page
 		Assert.assertEquals("SIS", driver.getTitle());
 		logout();
@@ -32,7 +32,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("Login Page", driver.getTitle());
 		
 		// login, go to Cart page, then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		driver.findElement(By.linkText("Cart")).click();
 		Assert.assertEquals("Cart", driver.getTitle());
 		logout();
@@ -40,7 +40,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("Login Page", driver.getTitle());
 		
 		// login, go to Transcript page, then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		driver.findElement(By.linkText("Transcript")).click();
 		Assert.assertEquals("Transcript", driver.getTitle());
 		logout();
@@ -48,7 +48,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("Login Page", driver.getTitle());
 		
 		// login, go to Payment page, then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		driver.findElement(By.linkText("Payment")).click();
 		Assert.assertEquals("Payment", driver.getTitle());
 		logout();
@@ -56,7 +56,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("Login Page", driver.getTitle());
 		
 		// login, go to Grades page, then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		driver.findElement(By.linkText("Grades")).click();
 		Assert.assertEquals("Grades", driver.getTitle());
 		logout();
@@ -64,7 +64,7 @@ public class LogoutTest extends AbstractSisAcceptanceTest {
 		Assert.assertEquals("Login Page", driver.getTitle());
 		
 		// login, go to Change Password page, then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		driver.findElement(By.linkText("Change Password")).click();
 		Assert.assertEquals("Change Password", driver.getTitle());
 		logout();

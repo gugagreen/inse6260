@@ -25,7 +25,7 @@ public class AddDuplicateClassToCartTest extends AbstractSisAcceptanceTest {
 		gotoHomePage();
 
 		// login then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		// should redirect to home page
 		Assert.assertEquals("SIS", driver.getTitle());
 		driver.findElement(By.linkText("Cart")).click();

@@ -22,7 +22,7 @@ public class LoginTest extends AbstractSisAcceptanceTest{
 		gotoHomePage();
 		
 		// login then logout
-		login("admin", "1234");
+		login("admin", "123456");
 		// should redirect to home page
 		Assert.assertEquals("SIS", driver.getTitle());
 		logout();

@@ -25,7 +25,7 @@ public class AddGradeTest extends AbstractSisAcceptanceTest {
 		gotoHomePage();
 		
 		// login then logout
-		login("prof1", "1234");
+		login("prof1", "123456");
 		// should redirect to home page
 		Assert.assertEquals("SIS", driver.getTitle());
 		driver.findElement(By.linkText("Grades")).click();

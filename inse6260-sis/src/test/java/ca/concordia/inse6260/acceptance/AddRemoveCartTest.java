@@ -21,7 +21,7 @@ public class AddRemoveCartTest extends AbstractSisAcceptanceTest {
 		// should redirect to login page
 		Assert.assertEquals("Login Page", driver.getTitle());
 		// login as admin
-		login("admin", "1234");
+		login("admin", "123456");
 		// should redirect to home page
 		Assert.assertEquals("SIS", driver.getTitle());
 		// now should be able to go to cart page

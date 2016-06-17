@@ -27,7 +27,7 @@ public class StudentTranscriptTest extends AbstractSisAcceptanceTest {
 				gotoHomePage();
 				
 				// login then logout
-				login("student1", "1234");
+				login("student1", "123456");
 				// should redirect to home page
 				Assert.assertEquals("SIS", driver.getTitle());
     assertTrue(isElementPresent(By.linkText("Transcript")));
