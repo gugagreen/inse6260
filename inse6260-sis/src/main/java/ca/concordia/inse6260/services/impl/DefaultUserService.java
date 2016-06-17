@@ -20,10 +20,10 @@ import ca.concordia.inse6260.services.UserService;
 @Component
 public class DefaultUserService implements UserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCartService.class);
-	
+
 	@Resource
 	private UserDAO userDao;
-	
+
 	@Resource
 	private StudentDAO studentDao;
 
@@ -44,6 +44,34 @@ public class DefaultUserService implements UserService {
 		return professors;
 	}
 
+	@Override
+	public String changePasswordForUser(final String username, final String password, final String newPassword) {
+		User user = userDao.findOne(username);
+		if (user != null) {
+			final String storedPassword = user.getPassword();
+			final boolean passwordCheck = storedPassword.equals(password);
+			if (passwordCheck) {
+				user.setPassword(newPassword);
+				userDao.save(user);
+			} else {
+				LOGGER.info("Incorrect user password: {}", username);
+				return "Error: Incorrect user password!";
+			}
+		} else {
+			LOGGER.debug("No user found with username: {}.", username);
+			return "Error: No user found with username: " + username;
+		}
+		return "OK";
+	}
+
+	public UserDAO getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDAO userDao) {
+		this.userDao = userDao;
+	}
+
 	public StudentDAO getStudentDao() {
 		return studentDao;
 	}
@@ -51,26 +79,4 @@ public class DefaultUserService implements UserService {
 	public void setStudentDao(StudentDAO studentDao) {
 		this.studentDao = studentDao;
 	}
-
-	@Override
-		public String changePasswordForUser(final String username, final String password, final String newPassword) {
-			User user = userDao.findOne(username);
-			if (user != null) {
-				final String storedPassword = user.getPassword();
-				final boolean passwordCheck = storedPassword.equals(password);
-				if (passwordCheck) {
-					
-					user.setPassword(newPassword);;
-					userDao.save(user);
-				} 
-				else {
-					LOGGER.info("Incorrect user password: {}", username);
-					return "Error: "+ "Incorrect user password!";
-				}
-			} else {
-				LOGGER.debug("No user found with username: {}.", username);
-				return "Error: No user found with username: "+ username;
-			}
-			return "OK";
-		}
 }
