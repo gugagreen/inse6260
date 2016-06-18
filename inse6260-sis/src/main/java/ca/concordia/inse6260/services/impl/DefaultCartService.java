@@ -1,7 +1,6 @@
 package ca.concordia.inse6260.services.impl;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,13 +17,13 @@ import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
 import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.enums.Grade;
-import ca.concordia.inse6260.entities.enums.Season;
 import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
 
 @Component
 public class DefaultCartService implements CartService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCartService.class);
+	private static final int MAX_COURSES_PER_SEASON = 2;
 
 	@Resource
 	private StudentDAO studentDao;
@@ -58,6 +57,11 @@ public class DefaultCartService implements CartService {
 				String message = String.format(baseMsg, username, courseEntryId);
 				LOGGER.debug(message);
 				throw new CannotPerformOperationException(message);
+			} else if (hasMaxCourses(records, courseEntryId)) {
+				String baseMsg = "Student %s already has %d courses in this season.";
+				String message = String.format(baseMsg, username, MAX_COURSES_PER_SEASON);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
 			} else {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
@@ -75,7 +79,21 @@ public class DefaultCartService implements CartService {
 			noStudentFound(username);
 		}
 	}
-	
+
+	private boolean hasMaxCourses(final List<AcademicRecordEntry> records, final long courseEntryId) {
+		CourseDates dates = courseEntryDao.findOne(courseEntryId).getDates();
+		int currentOnSeason = 0;
+		for (AcademicRecordEntry record : records) {
+			CourseDates recordDates = record.getCourseEntry().getDates();
+			// if same season and year, increment counter
+			if (recordDates.getSeason().equals(dates.getSeason())
+					&& recordDates.getStartDate().get(Calendar.YEAR) == dates.getStartDate().get(Calendar.YEAR)) {
+				currentOnSeason++;
+			}
+		}
+		return currentOnSeason >= MAX_COURSES_PER_SEASON;
+	}
+
 	private AcademicRecordStatus calculateStatus(CourseEntry courseEntry) {
 		// by default, status will be registered
 		AcademicRecordStatus status = AcademicRecordStatus.REGISTERED;
@@ -83,7 +101,7 @@ public class DefaultCartService implements CartService {
 		if (courseEntry.getSize() <= courseEntry.getStudents().size()) {
 			status = AcademicRecordStatus.WAIT_LIST;
 		}
-		
+
 		return status;
 	}
 
@@ -98,7 +116,7 @@ public class DefaultCartService implements CartService {
 				if (!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) {
 					records.remove(existentRecord);
 					studentDao.save(student);
-					
+
 					// also remove student from course entry list
 					CourseEntry courseEntry = existentRecord.getCourseEntry();
 					courseEntry.getStudents().remove(student);
@@ -130,12 +148,12 @@ public class DefaultCartService implements CartService {
 		}
 		return existentRecord;
 	}
-	
-	private boolean hasTimeConflict(final List<AcademicRecordEntry> records, final long courseEntryId){
+
+	private boolean hasTimeConflict(final List<AcademicRecordEntry> records, final long courseEntryId) {
 		boolean hasConflict = false;
 		CourseDates courseDates = courseEntryDao.findOne(courseEntryId).getDates();
-		
-		for(AcademicRecordEntry record : records){
+
+		for (AcademicRecordEntry record : records) {
 			CourseDates registeredCourseDates = record.getCourseEntry().getDates();
 			hasConflict = hasConflict(courseDates, registeredCourseDates);
 			if (hasConflict) {
@@ -144,38 +162,38 @@ public class DefaultCartService implements CartService {
 		}
 		return hasConflict;
 	}
-	
+
 	private boolean hasConflict(CourseDates cd1, CourseDates cd2) {
 		boolean hasConflict = true;
-		
+
 		// first check if there is no date conflict
 		// no conflict if (Start1 > End2) or (End1 < Start2)
 		if (cd1.getStartDate().after(cd2.getEndDate()) || cd1.getEndDate().before(cd2.getStartDate())) {
 			hasConflict = false;
-			// then check day conflict 
+			// then check day conflict
 		} else if (!matchingWeekdays(cd1.getWeekDays(), cd2.getWeekDays())) {
 			hasConflict = false;
 			// then check time conflict
 		} else if (cd1.getStartTime().after(cd2.getEndTime()) || cd1.getEndTime().before(cd2.getStartTime())) {
 			hasConflict = false;
 		}
-		
+
 		return hasConflict;
 	}
-	
-	private boolean matchingWeekdays(String weekDays, String otherDays){
+
+	private boolean matchingWeekdays(String weekDays, String otherDays) {
 		boolean matching = false;
 		String noDays = "-";
 		char noDay = noDays.charAt(0);
-		
-		for(int i = 0 ; i < weekDays.length() ; i++){
-			if((weekDays.charAt(i) != (noDay)) && (otherDays.charAt(i) != (noDay))){
+
+		for (int i = 0; i < weekDays.length(); i++) {
+			if ((weekDays.charAt(i) != (noDay)) && (otherDays.charAt(i) != (noDay))) {
 				matching = true;
 			}
 		}
 		return matching;
 	}
-	
+
 	private void noStudentFound(final String username) {
 		String baseMsg = "No student found with username: %s.";
 		String message = String.format(baseMsg, username);
@@ -198,5 +216,5 @@ public class DefaultCartService implements CartService {
 	public void setCourseEntryDao(CourseEntryDAO courseEntryDao) {
 		this.courseEntryDao = courseEntryDao;
 	}
-	
+
 }
