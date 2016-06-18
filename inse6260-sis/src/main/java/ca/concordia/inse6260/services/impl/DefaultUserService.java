@@ -118,4 +118,12 @@ public class DefaultUserService implements UserService {
 	public void setStudentDao(StudentDAO studentDao) {
 		this.studentDao = studentDao;
 	}
+
+	public PasswordEncoder getPasswordEncoder() {
+		return passwordEncoder;
+	}
+
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 }

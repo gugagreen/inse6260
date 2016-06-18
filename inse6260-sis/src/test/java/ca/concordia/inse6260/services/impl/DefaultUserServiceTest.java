@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.dao.UserDAO;
@@ -33,6 +35,7 @@ public class DefaultUserServiceTest {
 		service = new DefaultUserService();
 		service.setUserDao(userDao);
 		service.setStudentDao(studentDao);
+		service.setPasswordEncoder(new BCryptPasswordEncoder());
 	}
 
 	@Test
