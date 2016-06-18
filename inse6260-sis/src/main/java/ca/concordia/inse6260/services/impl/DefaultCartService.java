@@ -48,7 +48,17 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			if (hasCourse(records, courseEntryId) == null && !hasTimeConflict(records, courseEntryId)) {
+			if (hasTimeConflict(records, courseEntryId)) {
+				String baseMsg = "Class has time conflict with course %d in Student %s academic record.";
+				String message = String.format(baseMsg, courseEntryId, username);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
+			} else if (hasCourse(records, courseEntryId) != null) {
+				String baseMsg = "Student %s already has course %d in his academic record.";
+				String message = String.format(baseMsg, username, courseEntryId);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
+			} else {
 				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
 				AcademicRecordEntry entry = new AcademicRecordEntry();
 				entry.setCourseEntry(courseEntry);
@@ -60,16 +70,6 @@ public class DefaultCartService implements CartService {
 				// also add student to course entry list 
 				courseEntry.getStudents().add(student);
 				courseEntryDao.save(courseEntry);
-			} else if(hasTimeConflict(records,courseEntryId)){
-				String baseMsg = "Class has time conflict with course %d in Student %s academic record.";
-				String message = String.format(baseMsg, courseEntryId, username);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
-			}else {
-				String baseMsg = "Student %s already has course %d in his academic record.";
-				String message = String.format(baseMsg, username, courseEntryId);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
 			}
 		} else {
 			noStudentFound(username);
@@ -134,48 +134,32 @@ public class DefaultCartService implements CartService {
 	private boolean hasTimeConflict(final List<AcademicRecordEntry> records, final long courseEntryId){
 		boolean hasConflict = false;
 		CourseDates courseDates = courseEntryDao.findOne(courseEntryId).getDates();
-		Season entrySeason = courseDates.getSeason();
-		int entryYear = courseDates.getStartDate().get(Calendar.YEAR);
-		String weekDays = courseDates.getWeekDays();
-		
-		Date entryStartTime = courseDates.getStartTime();
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(entryStartTime);
 		
 		for(AcademicRecordEntry record : records){
-			CourseDates registeredCourseDates = courseEntryDao.findOne(record.getCourseEntry().getId()).getDates();
-			Season recordSeason = registeredCourseDates.getSeason();
-			int recordYear = registeredCourseDates.getStartDate().get(Calendar.YEAR);
-			String recordDays = registeredCourseDates.getWeekDays();
-			
-			boolean dayMatch = matchingWeekdays(weekDays, recordDays);
-			
-			Date recordStartTime = registeredCourseDates.getStartTime();
-			Calendar cal2 = Calendar.getInstance();
-			cal2.setTime(recordStartTime);
-			cal2.add(Calendar.DATE, 1);
-			
-			Date recordEndTime = registeredCourseDates.getEndTime();
-			Calendar cal3 = Calendar.getInstance();
-			cal3.setTime(recordEndTime);
-			cal3.add(Calendar.DATE, 1);
-			
-			Date x = entryStartTime;
-			boolean before = x.after(recordStartTime);
-			boolean equals = x.equals(recordStartTime);
-			boolean after = x.before(recordEndTime);
-			
-			
-			if(courseDates.equals(registeredCourseDates)){
-				hasConflict = true;
-			}
-			else if((entryYear==recordYear) && entrySeason.equals(recordSeason) && dayMatch && ((before || equals) && after)){
-				hasConflict = true;
-			}
-			else{
-				hasConflict = false;
+			CourseDates registeredCourseDates = record.getCourseEntry().getDates();
+			hasConflict = hasConflict(courseDates, registeredCourseDates);
+			if (hasConflict) {
+				break;
 			}
 		}
+		return hasConflict;
+	}
+	
+	private boolean hasConflict(CourseDates cd1, CourseDates cd2) {
+		boolean hasConflict = true;
+		
+		// first check if there is no date conflict
+		// no conflict if (Start1 > End2) or (End1 < Start2)
+		if (cd1.getStartDate().after(cd2.getEndDate()) || cd1.getEndDate().before(cd2.getStartDate())) {
+			hasConflict = false;
+			// then check day conflict 
+		} else if (!matchingWeekdays(cd1.getWeekDays(), cd2.getWeekDays())) {
+			hasConflict = false;
+			// then check time conflict
+		} else if (cd1.getStartTime().after(cd2.getEndTime()) || cd1.getEndTime().before(cd2.getStartTime())) {
+			hasConflict = false;
+		}
+		
 		return hasConflict;
 	}
 	
