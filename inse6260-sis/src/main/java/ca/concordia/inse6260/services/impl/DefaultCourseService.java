@@ -150,9 +150,10 @@ public class DefaultCourseService implements CourseService {
 			transcript.setStudentUsername(studentId);
 			List<AcademicRecordEntry> entries = getTranscriptRecords(student);
 			transcript.setAcademicRecords(entries);
-			String gpa = calculateGradePointAverage(entries);
+			List<AcademicRecordEntry> finishedEntries = getTranscriptRecordsFinished(student);
+			String gpa = calculateGradePointAverage(finishedEntries);
 			transcript.setGpa(gpa);
-			List<String> termGPA = calculateTermGPA(entries);
+			List<String> termGPA = calculateTermGPA(finishedEntries);
 			transcript.setTermGPA(termGPA);
 		} else {
 			String baseMsg = "No student found with username: %s.";
@@ -203,6 +204,18 @@ public class DefaultCourseService implements CourseService {
 	}
 
 	private List<AcademicRecordEntry> getTranscriptRecords(final Student student) {
+		List<AcademicRecordEntry> entries = new ArrayList<>();
+
+		for (AcademicRecordEntry entry : student.getAcademicRecords()) {
+			if (!entry.getStatus().equals(AcademicRecordStatus.WAIT_LIST)) {
+				entries.add(entry);
+			}
+		}
+
+		return entries;
+	}
+	
+	private List<AcademicRecordEntry> getTranscriptRecordsFinished(final Student student) {
 		List<AcademicRecordEntry> entries = new ArrayList<>();
 
 		for (AcademicRecordEntry entry : student.getAcademicRecords()) {
