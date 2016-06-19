@@ -15,6 +15,7 @@ function drawCourseTitle(courseEntry) {
 
 function drawStudentsTable(data) {
 	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawStudentsHeader());
 
 	for (var i = 0; i < data.length; i++) {

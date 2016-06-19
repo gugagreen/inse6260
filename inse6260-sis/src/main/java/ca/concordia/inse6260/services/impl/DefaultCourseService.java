@@ -122,6 +122,9 @@ public class DefaultCourseService implements CourseService {
 		if (record.getStatus() == AcademicRecordStatus.WAIT_LIST) {
 			throw new CannotPerformOperationException("You cannot add grade to a record in wait list");
 		}
+		if (record.getStatus() == AcademicRecordStatus.DISC) {
+			throw new CannotPerformOperationException("You cannot add grade to a record in disc");
+		}
 		if (Grade.valueOf(sGrade.getGrade()) == Grade.NOT_SET && record.getStatus() == AcademicRecordStatus.FINISHED) {
 			throw new CannotPerformOperationException("You can only update grade to NOT_SET if course is not finished");
 		}
@@ -150,6 +153,7 @@ public class DefaultCourseService implements CourseService {
 			transcript.setStudentUsername(studentId);
 			List<AcademicRecordEntry> entries = getTranscriptRecords(student);
 			transcript.setAcademicRecords(entries);
+			// only finished courses affect gpa (not registered or disc)
 			List<AcademicRecordEntry> finishedEntries = getTranscriptRecordsFinished(student);
 			String gpa = calculateGradePointAverage(finishedEntries);
 			transcript.setGpa(gpa);

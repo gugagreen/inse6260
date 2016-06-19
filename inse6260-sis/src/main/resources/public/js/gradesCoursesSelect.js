@@ -30,6 +30,7 @@ function populateCourses(data) {
 
 function drawCoursesTable(data) {
 	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawCoursesHeader());	
 
 	for (var i = 0; i < data.length; i++) {

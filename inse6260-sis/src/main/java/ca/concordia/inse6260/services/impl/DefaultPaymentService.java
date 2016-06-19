@@ -57,8 +57,8 @@ public class DefaultPaymentService implements PaymentService {
 			List<AcademicRecordEntry> records = student.getAcademicRecords();
 			List<AccountDebtEntry> debts = new ArrayList<>();
 			for (AcademicRecordEntry record : records) {
-				if (AcademicRecordStatus.FINISHED.equals(record.getStatus())
-						|| AcademicRecordStatus.REGISTERED.equals(record.getStatus())) {
+				// get balance for all status, except wait list
+				if (!AcademicRecordStatus.WAIT_LIST.equals(record.getStatus())) {
 					AccountDebtEntry debt = new AccountDebtEntry();
 					debt.setCourseEntry(record.getCourseEntry());
 					debt.setValue(calculateDebt(student.getOrigin(), record.getCourseEntry()));

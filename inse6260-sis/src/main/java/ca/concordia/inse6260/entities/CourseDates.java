@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 import ca.concordia.inse6260.entities.enums.Season;
 
 @Entity
-@NamedQuery(name="CourseDates.findSeasons", query="SELECT DISTINCT CONCAT(cd.season,substring(cd.startDate,1,4)) FROM CourseDates cd")
+@NamedQuery(name = "CourseDates.findSeasons", query = "SELECT DISTINCT CONCAT(cd.season,substring(cd.startDate,1,4)) FROM CourseDates cd")
 public class CourseDates {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,8 @@ public class CourseDates {
 	private Date startTime;
 	@Temporal(TemporalType.TIME)
 	private Date endTime;
+	@Temporal(TemporalType.DATE)
+	private Calendar discDate;
 	@Column(name = "season", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Season season;
@@ -42,8 +44,8 @@ public class CourseDates {
 
 	@Override
 	public String toString() {
-		return "CourseDates [id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", weekDays="
-				+ weekDays + ", startTime=" + startTime + ", endTime=" + endTime + ", season=" + season + "]";
+		return "CourseDates [id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", weekDays=" + weekDays
+				+ ", startTime=" + startTime + ", endTime=" + endTime + ", discDate=" + discDate + ", season=" + season + "]";
 	}
 
 	public long getId() {
@@ -92,6 +94,14 @@ public class CourseDates {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public Calendar getDiscDate() {
+		return discDate;
+	}
+
+	public void setDiscDate(Calendar discDate) {
+		this.discDate = discDate;
 	}
 
 	public Season getSeason() {

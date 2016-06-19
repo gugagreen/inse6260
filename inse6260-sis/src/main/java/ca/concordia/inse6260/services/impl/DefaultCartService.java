@@ -68,6 +68,11 @@ public class DefaultCartService implements CartService {
 					String message = String.format(baseMsg, username, MAX_COURSES_PER_SEASON);
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
+				} else if (hasStartDatePassed(courseEntry)) {
+					String baseMsg = "Student %s cannot add course entry %d because it has already started.";
+					String message = String.format(baseMsg, username, courseEntryId);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
 				} else {
 					AcademicRecordEntry entry = new AcademicRecordEntry();
 					entry.setCourseEntry(courseEntry);
@@ -75,8 +80,8 @@ public class DefaultCartService implements CartService {
 					entry.setStatus(calculateStatus(courseEntry));
 					records.add(entry);
 					studentDao.save(student);
-					
-					// also add student to course entry list 
+
+					// also add student to course entry list
 					courseEntry.getStudents().add(student);
 					courseEntryDao.save(courseEntry);
 				}
@@ -120,20 +125,28 @@ public class DefaultCartService implements CartService {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
 			AcademicRecordEntry existentRecord = hasCourseEntry(records, courseEntryId);
 			if (existentRecord != null) {
+				CourseEntry courseEntry = existentRecord.getCourseEntry();
 				// check if course is not finished
-				if (!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) {
-					records.remove(existentRecord);
-					studentDao.save(student);
+				if ((!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) && !hasEndDatePassed(courseEntry)) {
+					// check if disc date has passed, don't remove from record, just change status
+					if (hasDiscDatePassed(courseEntry)) {
+						LOGGER.debug("Moving course entry {} for student {} to disc.", courseEntryId, username);
+						existentRecord.setStatus(AcademicRecordStatus.DISC);
+						studentDao.save(student);
+					} else {
+						LOGGER.debug("Deleting course entry {} from student {} records.", courseEntryId, username);
+						records.remove(existentRecord);
+						studentDao.save(student);
+					}
 
 					// also remove student from course entry list
-					CourseEntry courseEntry = existentRecord.getCourseEntry();
 					courseEntry.getStudents().remove(student);
 					courseEntryDao.save(courseEntry);
-					
+
 					// then add next wait list student to class
 					moveNextWaitListStudentToRegistered(courseEntry);
 				} else {
-					String baseMsg = "Student %s cannot remove course entry %d from his academic record because it is already finished.";
+					String baseMsg = "Student %s cannot remove course entry %d from his academic record because it is already finished or end date passed.";
 					String message = String.format(baseMsg, username, courseEntryId);
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
@@ -216,11 +229,30 @@ public class DefaultCartService implements CartService {
 		}
 		return matching;
 	}
-	
+
+	private boolean hasDiscDatePassed(CourseEntry courseEntry) {
+		Calendar disc = courseEntry.getDates().getDiscDate();
+		return hasDatePassed(disc);
+	}
+
+	private boolean hasEndDatePassed(CourseEntry courseEntry) {
+		Calendar end = courseEntry.getDates().getEndDate();
+		return hasDatePassed(end);
+	}
+
+	private boolean hasStartDatePassed(CourseEntry courseEntry) {
+		Calendar start = courseEntry.getDates().getStartDate();
+		return hasDatePassed(start);
+	}
+
+	private boolean hasDatePassed(final Calendar baseDate) {
+		return Calendar.getInstance().after(baseDate);
+	}
+
 	private void moveNextWaitListStudentToRegistered(final CourseEntry entry) {
 		Iterable<AcademicRecordEntry> recordsIter = recordDao.findAll();
 		AcademicRecordEntry firstWaitList = null;
-		
+
 		for (AcademicRecordEntry iter : recordsIter) {
 			// check if course entry is the same, and if course entry is wait_list
 			if (iter.getCourseEntry().getId() == entry.getId() && AcademicRecordStatus.WAIT_LIST.equals(iter.getStatus())) {
@@ -230,12 +262,12 @@ public class DefaultCartService implements CartService {
 				}
 			}
 		}
-		
+
 		if (firstWaitList != null) {
 			firstWaitList.setStatus(AcademicRecordStatus.REGISTERED);
 			recordDao.save(firstWaitList);
 		}
-		
+
 	}
 
 	private void noStudentFound(final String username) {
@@ -244,7 +276,7 @@ public class DefaultCartService implements CartService {
 		LOGGER.debug(message);
 		throw new CannotPerformOperationException(message);
 	}
-	
+
 	private void noCourseEntryFound(final long id) {
 		String baseMsg = "No course entry found with id: %d.";
 		String message = String.format(baseMsg, id);

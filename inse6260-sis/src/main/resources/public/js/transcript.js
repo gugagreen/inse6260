@@ -59,7 +59,8 @@ function drawTranscriptTitle(transcript) {
 }
 
 function drawTranscriptTable(academicRecords) {
-	var table = $('<table>');	
+	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawTranscriptHeader());
 
 	for (var i = 0; i < academicRecords.length; i++) {
@@ -71,6 +72,7 @@ function drawTranscriptTable(academicRecords) {
 
 function drawTermGPATable(transcript){
 	var GPAtable = $('<table>');
+	GPAtable.attr({ class: ["table-bordered"]});
 	GPAtable.append(drawTranscriptGPAHeader());
 	
 	for (var i = 0; i < transcript.termGPA.length; i++){

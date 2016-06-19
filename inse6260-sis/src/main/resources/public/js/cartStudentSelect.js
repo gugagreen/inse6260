@@ -16,6 +16,7 @@ function populateCart(data) {
 
 function drawCartTable(data) {
 	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawCartHeader());
 
 	for (var i = 0; i < data.length; i++) {
@@ -25,7 +26,7 @@ function drawCartTable(data) {
 }
 
 function drawCartHeader() {
-	var headers = [ 'Id', 'Course', 'Days', 'Time', 'Date', 'Grade', 'Status' ];
+	var headers = [ 'Id', 'Course', 'Days', 'Time', 'Date', 'Disc', 'Grade', 'Status' ];
 	var link = "";
 	return createRow(headers, true, link);
 }
@@ -34,7 +35,7 @@ function drawCartRow(rowData) {
 	var dates = rowData.courseEntry.dates;
 
 	var values = [ rowData.id, rowData.courseEntry.course.code, dates.weekDays, dates.startTime + '-' + dates.endTime,
-			formatDate(dates.startDate) + " - " + formatDate(dates.endDate), rowData.grade, rowData.status ];
+			formatDate(dates.startDate) + " - " + formatDate(dates.endDate), formatDate(dates.discDate), rowData.grade, rowData.status ];
 	var link = $('<button>', {
 		text : 'Delete',
 		id : 'btn_del_' + rowData.id,

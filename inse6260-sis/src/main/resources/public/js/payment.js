@@ -32,7 +32,7 @@ function handleModifyStudent() {
 function populateStudentsSelect(data) {
 	var select = $('#student_select');
 	for (var i = 0; i < data.length; i++) {
-		select.append($("<option />").val(data[i].username).text(data[i].username));
+		select.append($("<option />").val(data[i].username).text(data[i].username + " - " + data[i].origin));
 	}
 }
 
@@ -65,6 +65,7 @@ function drawBalanceTitle(balance) {
 
 function drawDebtsTable(debts) {
 	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawDebtsHeader());	
 
 	for (var i = 0; i < debts.length; i++) {
@@ -87,6 +88,7 @@ function drawDebtsRow(rowData) {
 
 function drawPaymentsTable(payments) {
 	var table = $('<table>');
+	table.attr({ class: ["table-bordered"]});
 	table.append(drawPaymentsHeader());	
 
 	for (var i = 0; i < payments.length; i++) {
