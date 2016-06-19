@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
+import ca.concordia.inse6260.entities.Course;
 import ca.concordia.inse6260.entities.CourseDates;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
@@ -140,8 +141,9 @@ public class DefaultCartService implements CartService {
 
 	private AcademicRecordEntry hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
 		AcademicRecordEntry existentRecord = null;
+		Course course = courseEntryDao.findOne(courseEntryId).getCourse();
 		for (AcademicRecordEntry record : records) {
-			if ((record.getCourseEntry() != null) && (record.getCourseEntry().getId() == courseEntryId)) {
+			if ((record.getCourseEntry() != null) && record.getCourseEntry().getCourse().equals(course)) {
 				existentRecord = record;
 				break;
 			}
