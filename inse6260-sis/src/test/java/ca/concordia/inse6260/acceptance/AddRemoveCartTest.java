@@ -87,7 +87,7 @@ public class AddRemoveCartTest extends AbstractSisAcceptanceTest {
 	}
 	
 	private WebElement findAddButton(final String courseName) {
-		String buttonXPath = "//div[@id='allCourses']/table/tbody/tr/td[normalize-space() ='" + courseName + "']/../td[7]";
+		String buttonXPath = "//div[@id='allCourses']/table/tbody/tr/td[normalize-space() ='" + courseName + "']/../td[10]";
 		return findByXPath(buttonXPath);
 	}
 	
@@ -97,7 +97,7 @@ public class AddRemoveCartTest extends AbstractSisAcceptanceTest {
 	}
 	
 	private WebElement findDeleteButton(final String courseName) {
-		String buttonXPath = "//div[@id='cart']/table/tbody/tr/td[normalize-space() ='" + courseName + "']/../td[5]";
+		String buttonXPath = "//div[@id='cart']/table/tbody/tr/td[normalize-space() ='" + courseName + "']/../td[8]";
 		return findByXPath(buttonXPath);
 	}
 }

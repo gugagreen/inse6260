@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import ca.concordia.inse6260.dao.AcademicRecordEntryDAO;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
@@ -30,6 +31,8 @@ public class DefaultCartService implements CartService {
 	private StudentDAO studentDao;
 	@Resource
 	private CourseEntryDAO courseEntryDao;
+	@Resource
+	private AcademicRecordEntryDAO recordDao;
 
 	@Override
 	public List<AcademicRecordEntry> findCartByStudent(final String username) {
@@ -47,34 +50,38 @@ public class DefaultCartService implements CartService {
 	public void addCourseForStudent(final String username, final long courseEntryId) {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
-			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			if (hasCourse(records, courseEntryId) != null) {
-				String baseMsg = "Student %s already has course %d in his academic record.";
-				String message = String.format(baseMsg, username, courseEntryId);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
-			} else if (hasTimeConflict(records, courseEntryId)) {
-				String baseMsg = "Class was not added due to a time conflict please check to make sure you are registering for a future semester and that no other courses are at the same time.";
-				String message = String.format(baseMsg, courseEntryId, username);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
-			} else if (hasMaxCourses(records, courseEntryId)) {
-				String baseMsg = "Student %s already has %d courses in this season.";
-				String message = String.format(baseMsg, username, MAX_COURSES_PER_SEASON);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
+			CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
+			if (courseEntry != null) {
+				final List<AcademicRecordEntry> records = student.getAcademicRecords();
+				if (hasCourse(records, courseEntryId)) {
+					String baseMsg = "Student %s already has course %d in his academic record.";
+					String message = String.format(baseMsg, username, courseEntryId);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
+				} else if (hasTimeConflict(records, courseEntryId)) {
+					String baseMsg = "Class was not added due to a time conflict please check to make sure you are registering for a future semester and that no other courses are at the same time.";
+					String message = String.format(baseMsg, courseEntryId, username);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
+				} else if (hasMaxCourses(records, courseEntryId)) {
+					String baseMsg = "Student %s already has %d courses in this season.";
+					String message = String.format(baseMsg, username, MAX_COURSES_PER_SEASON);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
+				} else {
+					AcademicRecordEntry entry = new AcademicRecordEntry();
+					entry.setCourseEntry(courseEntry);
+					entry.setGrade(Grade.NOT_SET);
+					entry.setStatus(calculateStatus(courseEntry));
+					records.add(entry);
+					studentDao.save(student);
+					
+					// also add student to course entry list 
+					courseEntry.getStudents().add(student);
+					courseEntryDao.save(courseEntry);
+				}
 			} else {
-				CourseEntry courseEntry = courseEntryDao.findOne(courseEntryId);
-				AcademicRecordEntry entry = new AcademicRecordEntry();
-				entry.setCourseEntry(courseEntry);
-				entry.setGrade(Grade.NOT_SET);
-				entry.setStatus(calculateStatus(courseEntry));
-				records.add(entry);
-				studentDao.save(student);
-				
-				// also add student to course entry list 
-				courseEntry.getStudents().add(student);
-				courseEntryDao.save(courseEntry);
+				noCourseEntryFound(courseEntryId);
 			}
 		} else {
 			noStudentFound(username);
@@ -111,7 +118,7 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			AcademicRecordEntry existentRecord = hasCourse(records, courseEntryId);
+			AcademicRecordEntry existentRecord = hasCourseEntry(records, courseEntryId);
 			if (existentRecord != null) {
 				// check if course is not finished
 				if (!AcademicRecordStatus.FINISHED.equals(existentRecord.getStatus())) {
@@ -122,14 +129,17 @@ public class DefaultCartService implements CartService {
 					CourseEntry courseEntry = existentRecord.getCourseEntry();
 					courseEntry.getStudents().remove(student);
 					courseEntryDao.save(courseEntry);
+					
+					// then add next wait list student to class
+					moveNextWaitListStudentToRegistered(courseEntry);
 				} else {
-					String baseMsg = "Student %s cannot remove course %d from his academic record because it is already finished.";
+					String baseMsg = "Student %s cannot remove course entry %d from his academic record because it is already finished.";
 					String message = String.format(baseMsg, username, courseEntryId);
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
 				}
 			} else {
-				String baseMsg = "Student %s does not have course %d in his academic record to be removed.";
+				String baseMsg = "Student %s does not have course entry %d in his academic record to be removed.";
 				String message = String.format(baseMsg, username, courseEntryId);
 				LOGGER.debug(message);
 				throw new CannotPerformOperationException(message);
@@ -139,11 +149,22 @@ public class DefaultCartService implements CartService {
 		}
 	}
 
-	private AcademicRecordEntry hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
-		AcademicRecordEntry existentRecord = null;
+	private boolean hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
+		boolean existentRecord = false;
 		Course course = courseEntryDao.findOne(courseEntryId).getCourse();
 		for (AcademicRecordEntry record : records) {
 			if ((record.getCourseEntry() != null) && record.getCourseEntry().getCourse().equals(course)) {
+				existentRecord = true;
+				break;
+			}
+		}
+		return existentRecord;
+	}
+
+	private AcademicRecordEntry hasCourseEntry(final List<AcademicRecordEntry> records, final long courseEntryId) {
+		AcademicRecordEntry existentRecord = null;
+		for (AcademicRecordEntry record : records) {
+			if ((record.getCourseEntry() != null) && (record.getCourseEntry().getId() == courseEntryId)) {
 				existentRecord = record;
 				break;
 			}
@@ -195,10 +216,38 @@ public class DefaultCartService implements CartService {
 		}
 		return matching;
 	}
+	
+	private void moveNextWaitListStudentToRegistered(final CourseEntry entry) {
+		Iterable<AcademicRecordEntry> recordsIter = recordDao.findAll();
+		AcademicRecordEntry firstWaitList = null;
+		
+		for (AcademicRecordEntry iter : recordsIter) {
+			// check if course entry is the same, and if course entry is wait_list
+			if (iter.getCourseEntry().getId() == entry.getId() && AcademicRecordStatus.WAIT_LIST.equals(iter.getStatus())) {
+				// if iter record is before current firstWaitList, set firstWaitList to iter
+				if (firstWaitList == null || firstWaitList.getId() > iter.getId()) {
+					firstWaitList = iter;
+				}
+			}
+		}
+		
+		if (firstWaitList != null) {
+			firstWaitList.setStatus(AcademicRecordStatus.REGISTERED);
+			recordDao.save(firstWaitList);
+		}
+		
+	}
 
 	private void noStudentFound(final String username) {
 		String baseMsg = "No student found with username: %s.";
 		String message = String.format(baseMsg, username);
+		LOGGER.debug(message);
+		throw new CannotPerformOperationException(message);
+	}
+	
+	private void noCourseEntryFound(final long id) {
+		String baseMsg = "No course entry found with id: %d.";
+		String message = String.format(baseMsg, id);
 		LOGGER.debug(message);
 		throw new CannotPerformOperationException(message);
 	}
@@ -217,6 +266,14 @@ public class DefaultCartService implements CartService {
 
 	public void setCourseEntryDao(CourseEntryDAO courseEntryDao) {
 		this.courseEntryDao = courseEntryDao;
+	}
+
+	public AcademicRecordEntryDAO getRecordDao() {
+		return recordDao;
+	}
+
+	public void setRecordDao(AcademicRecordEntryDAO recordDao) {
+		this.recordDao = recordDao;
 	}
 
 }
