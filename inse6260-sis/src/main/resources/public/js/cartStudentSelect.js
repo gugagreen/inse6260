@@ -34,7 +34,7 @@ function drawCartHeader() {
 function drawCartRow(rowData) {
 	var dates = rowData.courseEntry.dates;
 
-	var values = [ rowData.id, rowData.courseEntry.course.code, dates.weekDays, dates.startTime + '-' + dates.endTime,
+	var values = [ rowData.courseEntry.id, rowData.courseEntry.course.code, dates.weekDays, dates.startTime + '-' + dates.endTime,
 			formatDate(dates.startDate) + " - " + formatDate(dates.endDate), formatDate(dates.discDate), rowData.grade, rowData.status ];
 	var link = $('<button>', {
 		text : 'Delete',
