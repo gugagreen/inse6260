@@ -1,5 +1,7 @@
 package ca.concordia.inse6260.services.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,9 +18,13 @@ import ca.concordia.inse6260.entities.AcademicRecordEntry;
 import ca.concordia.inse6260.entities.Course;
 import ca.concordia.inse6260.entities.CourseDates;
 import ca.concordia.inse6260.entities.CourseEntry;
+import ca.concordia.inse6260.entities.Payment;
 import ca.concordia.inse6260.entities.Student;
+import ca.concordia.inse6260.entities.dto.AccountBalance;
+import ca.concordia.inse6260.entities.dto.AccountDebtEntry;
 import ca.concordia.inse6260.entities.enums.AcademicRecordStatus;
 import ca.concordia.inse6260.entities.enums.Grade;
+import ca.concordia.inse6260.entities.enums.StudentOrigin;
 import ca.concordia.inse6260.exception.CannotPerformOperationException;
 import ca.concordia.inse6260.services.CartService;
 
@@ -73,7 +79,12 @@ public class DefaultCartService implements CartService {
 					String message = String.format(baseMsg, username, courseEntryId);
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
-				} else {
+				} else if(hasBalanceOwing(student)){
+					String baseMsg = "Student %s cannot add course entry %d because there is a balance owing for a completed semseter.";
+					String message = String.format(baseMsg, username, courseEntryId);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
+				}else {
 					AcademicRecordEntry entry = new AcademicRecordEntry();
 					entry.setCourseEntry(courseEntry);
 					entry.setGrade(Grade.NOT_SET);
@@ -93,6 +104,65 @@ public class DefaultCartService implements CartService {
 		}
 	}
 
+	private boolean hasBalanceOwing(Student student) {
+		boolean owes = false;
+		if (student != null) {
+			AccountBalance balance = new AccountBalance();
+			List<AcademicRecordEntry> records = student.getAcademicRecords();
+			List<AccountDebtEntry> debts = new ArrayList<>();
+			for (AcademicRecordEntry record : records) {
+				// get balance for finished/disc status, except wait list and registered
+				boolean balanceFinished = (AcademicRecordStatus.FINISHED.equals(record.getStatus()) || AcademicRecordStatus.DISC.equals(record.getStatus()));
+				if (balanceFinished) {
+					AccountDebtEntry debt = new AccountDebtEntry();
+					debt.setCourseEntry(record.getCourseEntry());
+					debt.setValue(calculateDebt(student.getOrigin(), record.getCourseEntry()));
+					debts.add(debt);
+				}
+			}
+			balance.setDebts(debts);
+			balance.setPayments(student.getPayments());
+			balance.setTotal(calculateTotal(balance));
+			BigDecimal zero = new BigDecimal("0"); 
+			if (balance.getTotal().compareTo(zero) == -1){
+				owes = true;
+			}
+		}
+		
+		return owes;
+	}
+	
+	private BigDecimal calculateTotal(final AccountBalance balance) {
+		BigDecimal total = new BigDecimal(0);
+		for (AccountDebtEntry debt : balance.getDebts()) {
+			total = total.subtract(debt.getValue());
+		}
+		for (Payment pay : balance.getPayments()) {
+			total = total.add(pay.getValue());
+		}
+		return total;
+	}
+
+	private BigDecimal calculateDebt(final StudentOrigin origin, final CourseEntry courseEntry) {
+		BigDecimal debt = null;
+		if (courseEntry != null && courseEntry.getBaseCost() != null) {
+			BigDecimal baseCost = courseEntry.getBaseCost();
+			switch (origin) {
+			case QUEBEC:
+				debt = baseCost.multiply(new BigDecimal(1));
+				break;
+			case CANADA:
+				debt = baseCost.multiply(new BigDecimal(2));
+				break;
+			case INTERNATIONAL:
+				debt = baseCost.multiply(new BigDecimal(5));
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid student origin");
+			}
+		}
+		return debt;
+	}
 	private boolean hasMaxCourses(final List<AcademicRecordEntry> records, final long courseEntryId) {
 		CourseDates dates = courseEntryDao.findOne(courseEntryId).getDates();
 		int currentOnSeason = 0;
