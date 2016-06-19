@@ -84,6 +84,11 @@ public class DefaultCartService implements CartService {
 					String message = String.format(baseMsg, username, courseEntryId);
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
+				} else if (doesntHavePrereq(student, courseEntry)){
+					String baseMsg = "Student %s cannot add course entry %d because there is a missing PreRequisite.";
+					String message = String.format(baseMsg, username, courseEntryId);
+					LOGGER.debug(message);
+					throw new CannotPerformOperationException(message);
 				}else {
 					AcademicRecordEntry entry = new AcademicRecordEntry();
 					entry.setCourseEntry(courseEntry);
@@ -102,6 +107,47 @@ public class DefaultCartService implements CartService {
 		} else {
 			noStudentFound(username);
 		}
+	}
+	
+	private boolean doesntHavePrereq(Student student, CourseEntry courseEntry){
+		boolean invalidPrereq = false;
+		Course prereq1 = null;
+		Course prereq2 = null;
+		if(courseEntryDao.findOne(courseEntry.getPrereq())!= null){
+			prereq1 = courseEntryDao.findOne(courseEntry.getPrereq()).getCourse();
+		}
+		if(courseEntryDao.findOne(courseEntry.getPrereq2()) != null){
+			prereq2 = courseEntryDao.findOne(courseEntry.getPrereq2()).getCourse();
+		}
+		
+		if (student != null){
+			List<AcademicRecordEntry> records = student.getAcademicRecords();
+			if(prereq1 != null){
+				for (AcademicRecordEntry record : records) {
+					if(record.getCourseEntry().getCourse().equals(prereq1)){
+						if(record.getGrade().equals(Grade.F)){
+							invalidPrereq = true;
+						}
+						break;
+					}else{
+						invalidPrereq = true;
+					}	
+				}
+			}
+			if(prereq2 != null){				
+				for (AcademicRecordEntry record : records) {
+					if(record.getCourseEntry().getCourse().equals(prereq2)){
+						if(record.getGrade().equals(Grade.F)){
+							invalidPrereq = true;
+						}
+						break;
+					}else{
+						invalidPrereq = true;
+					}	
+				}
+			}
+		}
+		return invalidPrereq;
 	}
 
 	private boolean hasBalanceOwing(Student student) {

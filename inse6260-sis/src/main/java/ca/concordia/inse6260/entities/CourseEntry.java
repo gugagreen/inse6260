@@ -26,6 +26,10 @@ public class CourseEntry {
 	@OneToOne(optional = false)
 	@JoinColumn(name = "course_id")
 	private Course course;
+	@Column(name = "PREREQ_1_ID", nullable = false, updatable = false)
+	private long prereq;
+	@Column(name = "PREREQ_2_ID", nullable = false, updatable = false)
+	private long prereq2;
 	@Column(name = "base_cost")
 	private BigDecimal baseCost;
 	@OneToOne
@@ -63,6 +67,21 @@ public class CourseEntry {
 
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+	
+	public long getPrereq() {
+		return prereq;
+	}
+
+	public void setPrereq(long prereq) {
+		this.prereq = prereq;
+	}
+	public long getPrereq2() {
+		return prereq2;
+	}
+
+	public void setPrereq2(long prereq2) {
+		this.prereq2 = prereq2;
 	}
 
 	public BigDecimal getBaseCost() {
