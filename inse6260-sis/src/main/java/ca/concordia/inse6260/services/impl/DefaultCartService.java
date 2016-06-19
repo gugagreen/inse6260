@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ca.concordia.inse6260.dao.CourseEntryDAO;
 import ca.concordia.inse6260.dao.StudentDAO;
 import ca.concordia.inse6260.entities.AcademicRecordEntry;
+import ca.concordia.inse6260.entities.Course;
 import ca.concordia.inse6260.entities.CourseDates;
 import ca.concordia.inse6260.entities.CourseEntry;
 import ca.concordia.inse6260.entities.Student;
@@ -47,14 +48,14 @@ public class DefaultCartService implements CartService {
 		Student student = studentDao.findOne(username);
 		if (student != null) {
 			final List<AcademicRecordEntry> records = student.getAcademicRecords();
-			if (hasTimeConflict(records, courseEntryId)) {
-				String baseMsg = "Class has time conflict with course %d in Student %s academic record.";
-				String message = String.format(baseMsg, courseEntryId, username);
-				LOGGER.debug(message);
-				throw new CannotPerformOperationException(message);
-			} else if (hasCourse(records, courseEntryId) != null) {
+			if (hasCourse(records, courseEntryId) != null) {
 				String baseMsg = "Student %s already has course %d in his academic record.";
 				String message = String.format(baseMsg, username, courseEntryId);
+				LOGGER.debug(message);
+				throw new CannotPerformOperationException(message);
+			} else if (hasTimeConflict(records, courseEntryId)) {
+				String baseMsg = "Class was not added due to a time conflict please check to make sure you are registering for a future semester and that no other courses are at the same time.";
+				String message = String.format(baseMsg, courseEntryId, username);
 				LOGGER.debug(message);
 				throw new CannotPerformOperationException(message);
 			} else if (hasMaxCourses(records, courseEntryId)) {
@@ -140,8 +141,9 @@ public class DefaultCartService implements CartService {
 
 	private AcademicRecordEntry hasCourse(final List<AcademicRecordEntry> records, final long courseEntryId) {
 		AcademicRecordEntry existentRecord = null;
+		Course course = courseEntryDao.findOne(courseEntryId).getCourse();
 		for (AcademicRecordEntry record : records) {
-			if ((record.getCourseEntry() != null) && (record.getCourseEntry().getId() == courseEntryId)) {
+			if ((record.getCourseEntry() != null) && record.getCourseEntry().getCourse().equals(course)) {
 				existentRecord = record;
 				break;
 			}
