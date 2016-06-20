@@ -31,7 +31,7 @@ import ca.concordia.inse6260.services.CartService;
 @Component
 public class DefaultCartService implements CartService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCartService.class);
-	private static final int MAX_COURSES_PER_SEASON = 2;
+	private static final int MAX_COURSES_PER_SEASON = 4;
 
 	@Resource
 	private StudentDAO studentDao;
@@ -113,20 +113,24 @@ public class DefaultCartService implements CartService {
 		boolean invalidPrereq = false;
 		Course prereq1 = null;
 		Course prereq2 = null;
-		if(courseEntryDao.findOne(courseEntry.getPrereq())!= null){
-			prereq1 = courseEntryDao.findOne(courseEntry.getPrereq()).getCourse();
+		for(CourseEntry entry :courseEntryDao.findAll()){
+			if(courseEntry.getPrereq() == entry.getCourse().getId()){
+				prereq1 = entry.getCourse();
+				break;
+			}
+			if(courseEntry.getPrereq2() == entry.getCourse().getId()){
+				prereq2 = entry.getCourse();
+				break;
+			}
 		}
-		if(courseEntryDao.findOne(courseEntry.getPrereq2()) != null){
-			prereq2 = courseEntryDao.findOne(courseEntry.getPrereq2()).getCourse();
-		}
-		
 		if (student != null){
 			List<AcademicRecordEntry> records = student.getAcademicRecords();
 			if(prereq1 != null){
+				invalidPrereq = true;
 				for (AcademicRecordEntry record : records) {
 					if(record.getCourseEntry().getCourse().equals(prereq1)){
-						if(record.getGrade().equals(Grade.F)){
-							invalidPrereq = true;
+						if(!record.getGrade().equals(Grade.F) && AcademicRecordStatus.FINISHED.equals(record.getStatus())){
+							invalidPrereq = false;
 						}
 						break;
 					}else{
@@ -134,11 +138,12 @@ public class DefaultCartService implements CartService {
 					}	
 				}
 			}
-			if(prereq2 != null){				
+			if(prereq2 != null){
+				invalidPrereq = true;
 				for (AcademicRecordEntry record : records) {
 					if(record.getCourseEntry().getCourse().equals(prereq2)){
-						if(record.getGrade().equals(Grade.F)){
-							invalidPrereq = true;
+						if(!record.getGrade().equals(Grade.F) && AcademicRecordStatus.FINISHED.equals(record.getStatus())){
+							invalidPrereq = false;
 						}
 						break;
 					}else{

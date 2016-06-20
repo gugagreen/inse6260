@@ -75,14 +75,14 @@ function drawDebtsTable(debts) {
 }
 
 function drawDebtsHeader() {
-	var headers = ['Code', 'Name', 'Credits', 'Season', 'End Date', 'Base Cost'];
+	var headers = ['Code', 'Name', 'Credits', 'Season', 'End Date','Disc Date', 'Base Cost'];
 	return createRow(headers, true, null);
 }
 
 function drawDebtsRow(rowData) {
 	var course = rowData.courseEntry.course;
 	var courseDates = rowData.courseEntry.dates;
-	var values = [course.code, course.name, course.credits, courseDates.season, formatDate(courseDates.endDate), rowData.courseEntry.baseCost];
+	var values = [course.code, course.name, course.credits, courseDates.season, formatDate(courseDates.endDate), formatDate(courseDates.discDate), rowData.courseEntry.baseCost];
 	return createRow(values, false, null);
 }
 
