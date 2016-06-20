@@ -35,7 +35,11 @@ function drawStudentsRow(rowData) {
 	var link = $('<select/>').attr({
 		id : 'grade_' + rowData.username
 	});
-	var data = ['NOT_SET', 'A_PLUS', 'A', 'A_MINUS', 'B_PLUS', 'B', 'B_MINUS', 'C_PLUS', 'C', 'C_MINUS', 'F'];
+	if (isProfessor()) {
+		var data = ['NOT_SET', 'A_PLUS', 'A', 'A_MINUS', 'B_PLUS', 'B', 'B_MINUS', 'C_PLUS', 'C', 'C_MINUS', 'F'];
+	} else if (isAdmin()) {
+		var data = ['NOT_SET', 'A_PLUS', 'A', 'A_MINUS', 'B_PLUS', 'B', 'B_MINUS', 'C_PLUS', 'C', 'C_MINUS', 'F','INCOMPLETE'];
+	}
 	for (var val in data) {
 		$('<option />', {value: data[val], text: data[val]}).appendTo(link);
 	}

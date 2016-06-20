@@ -131,7 +131,7 @@ public class DefaultCartService implements CartService {
 				invalidPrereq = true;
 				for (AcademicRecordEntry record : records) {
 					if(record.getCourseEntry().getCourse().equals(prereq1)){
-						if(!record.getGrade().equals(Grade.F) && AcademicRecordStatus.FINISHED.equals(record.getStatus())){
+						if(!(record.getGrade().equals(Grade.F) || record.getGrade().equals(Grade.INCOMPLETE))&& AcademicRecordStatus.FINISHED.equals(record.getStatus())){
 							invalidPrereq = false;
 						}
 						break;
@@ -144,7 +144,7 @@ public class DefaultCartService implements CartService {
 				invalidPrereq = true;
 				for (AcademicRecordEntry record : records) {
 					if(record.getCourseEntry().getCourse().equals(prereq2)){
-						if(!record.getGrade().equals(Grade.F) && AcademicRecordStatus.FINISHED.equals(record.getStatus())){
+						if(!(record.getGrade().equals(Grade.F) || record.getGrade().equals(Grade.INCOMPLETE)) && AcademicRecordStatus.FINISHED.equals(record.getStatus())){
 							invalidPrereq = false;
 						}
 						break;
@@ -309,7 +309,7 @@ public class DefaultCartService implements CartService {
 		boolean existentRecord = false;
 		Course course = courseEntryDao.findOne(courseEntryId).getCourse();
 		for (AcademicRecordEntry record : records) {
-			if ((record.getCourseEntry() != null) && record.getCourseEntry().getCourse().equals(course)) {
+			if ((record.getCourseEntry() != null) && record.getCourseEntry().getCourse().equals(course) && !record.getGrade().equals(Grade.INCOMPLETE)) {
 				existentRecord = true;
 				break;
 			}
