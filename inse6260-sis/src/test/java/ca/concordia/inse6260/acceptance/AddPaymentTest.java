@@ -30,14 +30,13 @@ public class AddPaymentTest extends AbstractSisAcceptanceTest {
 	// should redirect to home page
 	Assert.assertEquals("SIS", driver.getTitle());
     driver.findElement(By.linkText("Payment")).click();
-    new Select(driver.findElement(By.id("student_select"))).selectByVisibleText("student1");
+    new Select(driver.findElement(By.id("student_select"))).selectByVisibleText("student1 - QUEBEC");
     driver.findElement(By.cssSelector("option[value=\"student1\"]")).click();
     driver.findElement(By.id("paymentValue")).clear();
     driver.findElement(By.id("paymentValue")).sendKeys("0.1");
     driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-    
-    Thread.sleep(1000);
-    assertEquals("Success", driver.findElement(By.cssSelector("h4.modal-title")).getText());
+    driver.findElement(By.cssSelector("button.close")).click();
+    assertEquals("0.1", driver.findElement(By.xpath("//div[@id='balance']/table[2]/tbody/tr[2]/td[3]")).getText());
   }
 
   @After

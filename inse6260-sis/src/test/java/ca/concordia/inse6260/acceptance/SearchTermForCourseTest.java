@@ -32,7 +32,7 @@ public class SearchTermForCourseTest extends AbstractSisAcceptanceTest {
 		driver.findElement(By.linkText("Cart")).click();
 		new Select(driver.findElement(By.id("term_select"))).selectByVisibleText("SUMMER2016");
 		driver.findElement(By.cssSelector("option[value=\"SUMMER2016\"]")).click();
-		assertEquals("Software Quality Assurance", driver.findElement(By.xpath("//div[@id='allCourses']/table/tbody/tr[2]/td[4]")).getText());
+		assertEquals("Topics on Software Engineering", driver.findElement(By.xpath("//div[@id='allCourses']/table/tbody/tr[2]/td[4]")).getText());
   }
 
   @After
