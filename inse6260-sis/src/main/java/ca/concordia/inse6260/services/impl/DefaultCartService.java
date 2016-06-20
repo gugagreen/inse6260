@@ -90,6 +90,8 @@ public class DefaultCartService implements CartService {
 					LOGGER.debug(message);
 					throw new CannotPerformOperationException(message);
 				}else {
+					//Last error check for failed grades (F or two C's)
+					checkForFailedGrades(student, username, courseEntryId);
 					AcademicRecordEntry entry = new AcademicRecordEntry();
 					entry.setCourseEntry(courseEntry);
 					entry.setGrade(Grade.NOT_SET);
@@ -153,6 +155,26 @@ public class DefaultCartService implements CartService {
 			}
 		}
 		return invalidPrereq;
+	}
+	
+	private void checkForFailedGrades(Student student, final String username, final long courseEntryId){
+		int cCount = 0;
+		List<AcademicRecordEntry> records = student.getAcademicRecords();
+		for(AcademicRecordEntry record : records){
+			if(record.getGrade().equals(Grade.F)){
+				String baseMsg = "Student %s cannot add course entry %d because he has an F Grade on record";
+				String message = String.format(baseMsg, username, courseEntryId);
+				throw new CannotPerformOperationException(message);
+			}
+			if(record.getGrade().equals(Grade.C)||record.getGrade().equals(Grade.C_MINUS)||record.getGrade().equals(Grade.C_PLUS)){
+				cCount +=1;
+				if(cCount > 1){
+					String baseMsg = "Student %s cannot add course entry %d because he has two or more C Grades";
+					String message = String.format(baseMsg, username, courseEntryId);
+					throw new CannotPerformOperationException(message);
+				}
+			}
+		}
 	}
 
 	private boolean hasBalanceOwing(Student student) {
